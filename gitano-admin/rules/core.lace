@@ -1,0 +1,36 @@
+# Prepare the initial definitions
+
+default deny "The ruleset didn't provide access.  Denying by default."
+
+include global:defines
+
+# Now, if we're in the admin group, we can always do stuff
+allow "Administrators can do anything" is_admin !if_asanother
+
+# Now let's decide if we can use 'as'
+include global:aschecks if_asanother
+
+# Operations which are against 'self' get checked next
+include global:selfchecks
+
+# Administration operations (users, groups) next
+include global:siteadmin op_is_admin
+
+# Site-defined rules for repository creation
+include global:createrepo op_createrepo
+
+# Site-defined rules for repository renaming
+include global:renamerepo op_renamerepo
+
+# Site-defined rules for repository destruction
+include global:destroyrepo op_destroyrepo
+
+# Site-defined rules for project repositories, including admin of them
+include global:project
+
+# Now the project rules themselves
+include main
+
+# Now, if you want to allow anonymous access if the project doesn't prevent
+# it, then you can uncomment the following:
+# allow "Anonymous access is okay" op_read !is_admin_repo

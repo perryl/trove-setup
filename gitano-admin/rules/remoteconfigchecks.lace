@@ -1,0 +1,9 @@
+# Remote config checks
+
+# Owners may do any remote admin operation they choose
+allow "Owners may remote-admin their repositories" is_owner
+
+# ctxxx-admins may remote-admin ctxxx repositories
+allow "Project admins may admin project repos" repo_has_project_code ct_admins
+
+deny "You may not configure this repository remotely"

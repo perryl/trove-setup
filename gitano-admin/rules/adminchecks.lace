@@ -1,0 +1,18 @@
+# Core project administration rules
+
+# Called with ref known to be refs/gitano/admin
+
+# Administrators already got to do anything, so this is for non-admins
+
+# Non-admin members may not delete the admin ref
+deny "Non-administrators may not delete the admin ref" op_deleteref
+
+# Otherwise, the project's owner is allowed to alter the admin tree
+allow "Project owner may alter the admin ref" is_owner
+
+# Project admins may alter admin
+allow "Project admins may alter the admin ref of project repos" repo_has_project_code ct_admin
+
+# Any other opportunities for altering the admin ref must be provided
+# by the project's rules
+ 

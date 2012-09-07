@@ -1,0 +1,9 @@
+# Rules related to the destroying of repositories
+
+# For now, owners may destroy repositories
+allow "You may destroy your own repositories" is_owner
+
+# Admins may destroy repos inside their projects
+allow "Project admins may destroy project repos" repo_has_project_code ct_admins
+
+deny "You may not destroy repositories you do not own"

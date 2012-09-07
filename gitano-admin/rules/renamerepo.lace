@@ -1,0 +1,6 @@
+# Rules related to renaming repositories
+
+# For now, owners may rename their repositories
+allow "Owners may rename repositories" op_renamerepo is_owner
+
+deny "You may not rename a repository you do not own"

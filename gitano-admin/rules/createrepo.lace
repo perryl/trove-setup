@@ -1,0 +1,15 @@
+# Rules related to creating repositories
+
+# Administrators have already been permitted whatever they like
+# so this is for non-admins.
+
+# Uncomment the following to allow repositories in personal/username/
+
+define repo_is_personal repository ~^people/${user}/
+allow "Personal repo creation is okay" repo_is_personal
+
+# Allow people in ctxxx-admins to create repositories under ctxxx
+allow "Project admins may make project repositories" repo_has_project_code ct_admin
+
+# Otherwise the default is that non-admins can't create repositories
+deny "Repository creation is not permitted."

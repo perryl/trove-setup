@@ -1,0 +1,5 @@
+# Checks against self
+
+allow "You may ask who you are" op_whoami
+
+allow "You may manage your own ssh keys" op_sshkey

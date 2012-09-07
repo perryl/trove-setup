@@ -1,0 +1,22 @@
+# Core project administration rules
+
+# Admins already got allowed, so this is for non-admin users only
+allow "Owners can always read and write" op_is_basic is_owner
+
+# Uncomment if you want to *force* anonymous access to all but gitano-admin
+# allow "Anonymous access always allowed" op_read !is_admin_repo
+
+# Project remote-configuration rules (set-head etc)
+include global:remoteconfigchecks op_is_config
+
+# Okay, if we're altering the admin ref, in we go
+include global:adminchecks is_admin_ref
+
+# Now we're into branch operations.  Owners can do any normal operation
+# Normal ops are create/delete/fastforward on refs
+allow "Owners can create refs" op_is_normal is_owner
+# We don't enable non-fastforward updates by default.  Projects must do
+# this in their own rules if they want it.
+
+
+include global:ct-project repo_has_project_code

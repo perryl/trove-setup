@@ -1,0 +1,22 @@
+# Site administration rules
+
+# You must explicitly allow site administration here for anyone who
+# has the rights to do site admin but isn't a member of gitano-admin.
+
+# ct_site_admin is a predicate which is for ct-admin
+allow "CT Site Admins can manage users" ct_site_admin op_user
+allow "CT Site Admins can manage groups other than gitano-admin" ct_site_admin op_group !target_group_gitano_admin
+
+# ctXXX-admins members are permitted to edit ctXXX-* groups
+define ct_may_admin_target_group group ${targetgroup/prefix}-admins
+define is_ct_project_target targetgroup ~^ct[0-9]+%-
+allow "CT project admins can manage ctXXX- groups for their projects" op_group is_ct_project_target ct_may_admin_target_group
+
+# Anyone is permitted to look at the people in ct-admin and ctXXX-admins
+define ct_target_group_is_ct_admin targetgroup ct-admin
+define ct_target_group_is_ctxxx_admins targetgroup ~^ct[0-9]+%-admins$
+define ct_show_target_ok anyof ct_target_group_is_ct_admin ct_target_group_is_ctxxx_admins
+allow "Anyone may see admin groups" op_groupshow ct_show_target_ok
+
+# Otherwise we always deny site administration
+deny "You may not perform site administration"
