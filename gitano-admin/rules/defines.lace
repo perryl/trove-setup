@@ -1,4 +1,14 @@
-# A useful set of defines
+#  _____                   
+# |_   _| __ _____   _____ 
+#   | || '__/ _ \ \ / / _ \
+#   | || | | (_) \ V /  __/
+#   |_||_|  \___/ \_/ \___|
+#
+# Copyright 2012 Codethink Limited
+#
+# Core definitions for access control
+
+# Gitano provided definitions first
 
 # User/group related
 define is_admin group gitano-admin
@@ -65,18 +75,26 @@ define is_admin_repo repository gitano-admin
 define is_gitano_ref ref ~^refs/gitano/
 define is_admin_ref ref refs/gitano/admin
 
-# Codethink defines:
+#
+#
+# Trove definitions after here
+#
+#
 
-define repo_has_project_code repository ~^ct[0-9]+/
+define repo_is_personal repository ~^##ESC_PERSONAL_PREFIX##/${user}/
+define repo_is_local_project repository ~^##ESC_PREFIX##/[^/]+/
 
-define ct_reader group ${repository/1}-readers
-define ct_writer group ${repository/1}-writers
-define ct_admin  group ${repository/1}-admins
+define project_reader  group ${repository/2}-readers
+define project_writer  group ${repository/2}-writers
+define project_admin   group ${repository/2}-admins
+define project_manager group ${repository/2}-managers
 
 define master_ref ref ~^refs/heads/master$
 
 define op_is_reffy anyof op_is_normal op_forcedupdate
 
-define ct_site_admin group ct-admin
-
+define trove_site_admin group trove-admin
 define target_group_gitano_admin targetgroup gitano-admin
+
+define is_lorry user lorry
+define is_local_ref ref ~^refs/heads/##ESC_PREFIX##/

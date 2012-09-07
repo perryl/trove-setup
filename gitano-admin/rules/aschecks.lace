@@ -1,14 +1,29 @@
+#  _____                   
+# |_   _| __ _____   _____ 
+#   | || '__/ _ \ \ / / _ \
+#   | || | | (_) \ V /  __/
+#   |_||_|  \___/ \_/ \___|
+#
+# Copyright 2012 Codethink Limited
+#
 # Rules for when we're running as another user.
-# Only 'deny' things which are not allowed.
-# If you 'allow' then it will allow the actual operation, not just
-# fail to deny the fact that it's 'as' someone else.
+
+# Only 'deny' things which are not allowed.  If you 'allow' then it will allow
+# the actual operation, not just fail to deny the fact that it's 'as' someone
+# else.
 
 define as_is_admin as_group gitano-admin
 
-# ct-admin members are permitted to run sshkey and whoami on behalf of others
-define as_is_ct_admin as_group ct-admin
-define as_ct_admin_ok allof as_is_ct_admin op_self
+# trove-admin members are permitted to run sshkey and whoami on behalf
+# of others in order to check users and grant access
 
-define as_is_ok anyof as_is_admin as_ct_admin_ok
+define as_is_trove_admin as_group trove-admin
+define as_trove_admin_ok allof as_is_trove_admin op_self
 
+# You are permitted to do things 'as' others if and only if the caller is
+# either a member of the administration group, or else meets the above
+# requirements.
+define as_is_ok anyof as_is_admin as_trove_admin_ok
+
+# Explicitly deny any impersonation operation which does not meet the above.
 deny "You may not run things as another user unless you are an admin" !as_is_ok

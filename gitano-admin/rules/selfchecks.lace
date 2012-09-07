@@ -1,4 +1,12 @@
-# Checks against self
+#  _____                   
+# |_   _| __ _____   _____ 
+#   | || '__/ _ \ \ / / _ \
+#   | || | | (_) \ V /  __/
+#   |_||_|  \___/ \_/ \___|
+#
+# Copyright 2012 Codethink Limited
+#
+# Checks against self-like operations.
 
 allow "You may ask who you are" op_whoami
 

@@ -1,0 +1,22 @@
+#  _____                   
+# |_   _| __ _____   _____ 
+#   | || '__/ _ \ \ / / _ \
+#   | || | | (_) \ V /  __/
+#   |_||_|  \___/ \_/ \___|
+#
+# Copyright 2012 Codethink Limited
+#
+# Rules for any repository not under ##PREFIX##
+
+# This is, by default, /baserock/ and /delta/
+
+# There are two classes of accessors here.  Lorry and Others
+allow "Anyone may read here" op_read
+allow "Anyone may write here" op_write
+
+# Lorry can do anything reffy which is not inside the local refs
+allow "Lorry may touch everything but refs/heads/##PREFIX##" op_is_reffy is_lorry !is_local_ref
+
+# Everyone else can do reffy things inside refs/heads/##PREFIX##
+allow "Project writers may alter any refs" op_is_reffy !is_lorry is_local_ref
+

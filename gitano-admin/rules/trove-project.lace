@@ -1,0 +1,28 @@
+#  _____                   
+# |_   _| __ _____   _____ 
+#   | || '__/ _ \ \ / / _ \
+#   | || | | (_) \ V /  __/
+#   |_||_|  \___/ \_/ \___|
+#
+# Copyright 2012 Codethink Limited
+#
+# Rules for ##PREFIX##/... repositories
+
+# Reading the repository
+allow "Project readers may read" op_read ct_reader
+deny "This repository is not for you" op_read
+
+# Basic writes to the repo
+allow "Project writers may write" op_write ct_writer
+deny "This repository is not for you" op_write
+
+# Ref based rules for the repo
+
+## Master
+allow "Master may be created" op_createref master_ref
+allow "Master may be altered" op_is_update master_ref
+deny "Master may not be deleted" op_deleteref master_ref
+
+## Anything else.
+allow "Project writers may alter any refs" op_is_reffy !master_ref
+

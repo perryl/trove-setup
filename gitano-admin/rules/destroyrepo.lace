@@ -1,9 +1,17 @@
+#  _____                   
+# |_   _| __ _____   _____ 
+#   | || '__/ _ \ \ / / _ \
+#   | || | | (_) \ V /  __/
+#   |_||_|  \___/ \_/ \___|
+#
+# Copyright 2012 Codethink Limited
+#
 # Rules related to the destroying of repositories
 
-# For now, owners may destroy repositories
-allow "You may destroy your own repositories" is_owner
+# Owners may destroy personal repositories
+allow "You may destroy your own repositories" is_owner repo_is_personal
 
-# Admins may destroy repos inside their projects
-allow "Project admins may destroy project repos" repo_has_project_code ct_admins
+# Project admins may destroy repos inside their projects
+allow "Project admins may destroy project repos" repo_is_local_project project_admin
 
 deny "You may not destroy repositories you do not own"

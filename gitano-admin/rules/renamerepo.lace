@@ -1,6 +1,19 @@
+#  _____                   
+# |_   _| __ _____   _____ 
+#   | || '__/ _ \ \ / / _ \
+#   | || | | (_) \ V /  __/
+#   |_||_|  \___/ \_/ \___|
+#
+# Copyright 2012 Codethink Limited
+#
 # Rules related to renaming repositories
 
-# For now, owners may rename their repositories
-allow "Owners may rename repositories" op_renamerepo is_owner
+# Owners may rename their own repositories
+allow "Owners may rename repositories" op_renamerepo repo_is_personal is_owner
+
+# Project admins may rename repos provided they're admin of source *and* target
+# Since the rename operation checks 'create' for the target, we can just
+# check the source here
+allow "Admins may rename project repositories" op_renamerepo repo_is_local_project project_admin
 
 deny "You may not rename a repository you do not own"

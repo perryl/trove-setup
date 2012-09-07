@@ -1,10 +1,20 @@
-# Prepare the initial definitions
+#  _____                   
+# |_   _| __ _____   _____ 
+#   | || '__/ _ \ \ / / _ \
+#   | || | | (_) \ V /  __/
+#   |_||_|  \___/ \_/ \___|
+#
+# Copyright 2012 Codethink Limited
+#
+# Core ruleset definitions for Trove.
 
-default deny "The ruleset didn't provide access.  Denying by default."
+default deny "Trove ruleset failed to define result.  Access denied."
 
 include global:defines
 
-# Now, if we're in the admin group, we can always do stuff
+# The users in the administration group (gitano-admin) may do anything
+# they choose (providing they're not being impersonated).  By default
+# Only the user created as part of trove-setup has this level of access.
 allow "Administrators can do anything" is_admin !if_asanother
 
 # Now let's decide if we can use 'as'
@@ -31,6 +41,7 @@ include global:project
 # Now the project rules themselves
 include main
 
-# Now, if you want to allow anonymous access if the project doesn't prevent
-# it, then you can uncomment the following:
+# If you're running your access control somewhat more openly than most, You can
+# now uncomment the following and allow git:// access to *everything* which is
+# not the admin repository
 # allow "Anonymous access is okay" op_read !is_admin_repo

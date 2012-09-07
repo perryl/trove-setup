@@ -1,9 +1,17 @@
+#  _____                   
+# |_   _| __ _____   _____ 
+#   | || '__/ _ \ \ / / _ \
+#   | || | | (_) \ V /  __/
+#   |_||_|  \___/ \_/ \___|
+#
+# Copyright 2012 Codethink Limited
+#
 # Remote config checks
 
 # Owners may do any remote admin operation they choose
-allow "Owners may remote-admin their repositories" is_owner
+allow "Owners may remote-admin their repositories" is_owner repo_is_personal
 
-# ctxxx-admins may remote-admin ctxxx repositories
-allow "Project admins may admin project repos" repo_has_project_code ct_admins
+# *-admins may remote-admin their project's repositories
+allow "Project admins may admin project repos" repo_is_local_project project_admin
 
 deny "You may not configure this repository remotely"
