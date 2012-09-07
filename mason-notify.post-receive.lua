@@ -45,6 +45,7 @@ if notify_mason and repo.name ~= "gitano-admin" then
 
    for i = 1, #urlbases do
       local comma = (i==#urlbases) and "" or ","
+      _(("%q,"):format(urlbases[i] .. repo.name)
       _(("%q%s"):format(urlbases[i] .. repo.name .. ".git", comma))
    end
 
@@ -80,7 +81,7 @@ if notify_mason and repo.name ~= "gitano-admin" then
    log.state("Notifying Mason of changes...")
 
    local code, msg, headers, content =
-      http.post(masonhost, basepath, "text/json", masoninfo)
+      http.post(masonhost, basepath, "application/json", masoninfo)
    if code ~= "200" then
       log.state("Notification failed somehow")
    end
