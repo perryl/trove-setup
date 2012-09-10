@@ -12,6 +12,8 @@
 
 local project_hook, repo, updates = ...
 
+local EMPTY_SHA = ("0"):rep(40)
+
 local masonhost = "##MASON_HOST##:##MASON_PORT##"
 local basepath = "/1.0"
 local urlbases = {
@@ -56,8 +58,17 @@ if notify_mason and repo.name ~= "gitano-admin" then
    local toreport = {}
    for ref, info in pairs(updates) do
       if not ref:match("^refs/gitano") then
+	 local action
+	 if info.oldsha == EMPTY_SHA then
+	    action = "create"
+	 elseif info.newsha == EMPTY_SHA then
+	    action = "delete"
+	 else
+	    action = "update"
+	 end
 	 toreport[#toreport+1] = { 
 	    ('"ref": %q,'):format(ref),
+	    ('"action": %q,'):format(action),
 	    ('"old": %q,'):format(info.oldsha),
 	    ('"new": %q'):format(info.newsha)
 	 }
