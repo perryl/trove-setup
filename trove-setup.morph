@@ -1,0 +1,8 @@
+{
+    "name": "trove-setup",
+    "kind": "chunk",
+    "build-system": "manual",
+    "install-commands": [
+        "make install DESTDIR=\"$DESTDIR\""
+    ]
+}
