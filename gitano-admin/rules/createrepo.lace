@@ -14,7 +14,10 @@
 ##PEOPLE_COMMENT##allow "Personal repo creation is okay" repo_is_personal
 
 # Allow people in *-admins to create repositories under <foo>
-allow "Project admins may make project repositories" repo_has_project_code project_admin
+allow "Project admins may make project repositories" repo_is_local_project project_admin
+
+# Allow lorry to create repositories anywhere but the local project root
+allow "Lorry may create repositories anywhere but the local root" !repo_is_local_project is_lorry
 
 # Otherwise the default is that non-admins can't create repositories
 deny "Repository creation is not permitted."

@@ -47,7 +47,7 @@ if notify_mason and repo.name ~= "gitano-admin" then
 
    for i = 1, #urlbases do
       local comma = (i==#urlbases) and "" or ","
-      _(("%q,"):format(urlbases[i] .. repo.name)
+      _(("%q,"):format(urlbases[i] .. repo.name))
       _(("%q%s"):format(urlbases[i] .. repo.name .. ".git", comma))
    end
 
