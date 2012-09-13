@@ -1,0 +1,6 @@
+[Unit]
+Description=Morph cache server (write interface)
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/morph-cache-server --config=/etc/morph-cache-server-write.conf

@@ -7,8 +7,9 @@ install:
 		ln -sf ../$$I "${DESTDIR}/usr/lib/systemd/system/multi-user.target.wants/$$I"; \
 	done
 	mkdir -p "${DESTDIR}/etc"
-	cp cgitrc "${DESTDIR}/etc/cgitrc"
-	cp cgit-head.inc "${DESTDIR}/etc/cgit-trove-head.inc"
+	for I in etc/*; do \
+		cp $$I "${DESTDIR}/"; \
+	done
 	mkdir -p "${DESTDIR}/var/www/htdocs"
 	cp http-assets/* "${DESTDIR}/var/www/htdocs"
 	ln -s cgit "${DESTDIR}/var/www/htdocs/cgi-bin"

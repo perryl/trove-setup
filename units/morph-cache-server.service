@@ -1,0 +1,6 @@
+[Unit]
+Description=Morph cache server
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/morph-cache-server
