@@ -3,4 +3,4 @@ Description=Morph cache server (write interface)
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/morph-cache-server --config=/etc/morph-cache-server-write.conf
+ExecStart=/bin/su -c '/usr/bin/morph-cache-server --config=/etc/morph-cache-server-write.conf' - cache

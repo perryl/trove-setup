@@ -3,4 +3,4 @@ Description=Morph cache server
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/morph-cache-server
+ExecStart=/bin/su -c /usr/bin/morph-cache-server - cache
