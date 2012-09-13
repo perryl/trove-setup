@@ -1,0 +1,52 @@
+table#header {
+   background-color: #333;
+}
+
+body {
+   margin: 0px;
+}
+
+div#cgit {
+   padding: 0px !important;
+}
+
+table#header {
+   min-height: 150px;
+}
+
+table#header tr td.main {
+   color: #ccc;
+}
+
+table#header tr td.sub {
+   color: #ccc !important;
+}
+
+table.tabs a.active {
+   background-color: #adc81c !important;
+}
+
+table.tabs {
+   border-bottom: solid 3px #adc81c !important;
+}
+
+div.content {
+   border-bottom: solid 3px #adc81c !important;
+}
+
+table#header td.sub {
+   border-top: solid 1px #adc81c !important;
+}
+
+table#header img {
+   padding: 3px;
+}
+
+div#cgit table#header td.main a {
+   color: #1e8482 !important;
+}
+
+div#cgit table#header td.main > a:first-child {
+   color: #adc81c !important;
+}
+
