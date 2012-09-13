@@ -1,9 +1,24 @@
 #!/usr/bin/make -f
 # -*- Make -*-
 
-all: gitano-configured
+all: substitutions-done gitano-configured
 
 USERS := git lorry cache
+
+substitutions-done: /etc/trove-setup.sed hostname-not-baserock
+	sed -f /etc/trove-setup.sed \
+               /usr/share/gitano/skel/gitano-admin/*/*.{lua,lace} \
+	       etc/cgitrc etc/gitano-setup.clod
+
+/etc/trove-setup.sed:
+	@echo "You need to create $@ to continue."
+	@echo "There is $@.example which you can work from."
+	@echo "re-run trove-early-setup once you're done with this."
+	@exit 1
+
+.PHONY: hostname-not-baserock
+hostname-not-baserock:
+	test "x$$(hostname)" != "baserock"
 
 # $1 == username to make
 define make_user_rules
