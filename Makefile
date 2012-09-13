@@ -14,3 +14,5 @@ install:
 	cp http-assets/* "${DESTDIR}/var/www/htdocs"
 	ln -s cgit "${DESTDIR}/var/www/htdocs/cgi-bin"
 	ln -s /home/lorry/bundles "${DESTDIR}/var/www/htdocs/bundles"
+	mkdir -p "${DESTDIR}/usr/bin"
+	cp bins/* "${DESTDIR}/usr/bin/"
