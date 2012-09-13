@@ -7,8 +7,9 @@ USERS := git lorry cache
 
 substitutions-done: /etc/trove-setup.sed hostname-not-baserock
 	sed -f /etc/trove-setup.sed \
-               /usr/share/gitano/skel/gitano-admin/*/*.{lua,lace} \
-	       etc/cgitrc etc/gitano-setup.clod
+               /usr/share/gitano/skel/gitano-admin/*/*.lace \
+               /usr/share/gitano/skel/gitano-admin/*/*.lua \
+	       /etc/cgitrc /etc/gitano-setup.clod
 
 /etc/trove-setup.sed:
 	@echo "You need to create $@ to continue."
