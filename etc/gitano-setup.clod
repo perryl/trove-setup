@@ -1,0 +1,16 @@
+-- Configuration for gitano-setup
+
+paths.home "/home/git"
+paths.ssh "/home/git/.ssh"
+paths.pubkey "/home/git/.ssh/id_rsa.pub"
+paths.repos "/home/git/repos"
+
+admin.username "trove"
+admin.realname "Trove Instance Administrator"
+admin.email "trove@trove-instance"
+admin.keyname "trove"
+
+site.name "##TROVE_TITLE## for ##TROVE_COMPANY##"
+log.prefix "##TROVE_PREFIX##"
+
+setup.batch = true

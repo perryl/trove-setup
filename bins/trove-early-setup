@@ -1,19 +1,31 @@
 #!/usr/bin/make -f
 # -*- Make -*-
 
-all: users
+all: gitano-configured
 
-users: /home/git/.created /home/lorry/.created /home/cache/.created
+USERS := git lorry cache
 
-/home/%/.created: hostname-set
-	TROVE_USER=$(patsubst /home/%/.created,%,$@); \
-	adduser -g "Trove $$TROVE_USER service" -s /bin/bash -D $$TROVE_USER && \
-	echo -e'insecure\ninsecure' | passwd $$TROVE_USER && \
-	su -c 'mkdir .ssh; chmod 750 .ssh' - $$TROVE_USER && \
-	su -c 'ssh-keygen -t rsa -N "" -q -f .ssh/id_rsa' - $$TROVE_USER && \
-        (cat /etc/ssh/ssh_host_*_key.pub | cut -d\  -f1,2 | \
-	 sed -e's/^/'$$(hostname)',localhost /' > \
-	 /home/$$TROVE_USER/.ssh/known_hosts) && \
-        chown $$TROVE_USER:$$TROVE_USER /home/$$TROVE_USER/.ssh/known_hosts && \
-        chmod 600 /home/$$TROVE_USER/.ssh/known_hosts
-	touch $@
+# $1 == username to make
+define make_user_rules
+
+/home/$1/.created:
+	adduser -g "Trove $1 service" -s /bin/bash -D $1
+	su -c 'mkdir .ssh; chmod 750 .ssh' - $1
+	su -c 'ssh-keygen -t rsa -N "" -q -f .ssh/id_rsa' - $1
+	(cat /etc/ssh/ssh_host_*_key.pub | cut -d\  -f1,2 | \
+	 sed -e's/^/'$(shell hostname)',localhost /' > \
+	 /home/$1/.ssh/known_hosts)
+	chown $1:$1 /home/$1/.ssh/known_hosts
+	chmod 600 /home/$1/.ssh/known_hosts
+	touch $$@
+
+ALL_USER_TARGETS := $$(ALL_USER_TARGETS) /home/$1/.created
+
+endef
+
+$(eval $(foreach USER,$(USERS),$(call make_user_rules,$(USER))))
+
+users: $(ALL_USER_TARGETS)
+
+gitano-configured: users
+	su -c 'gitano-setup /etc/gitano-setup.clod' - git
