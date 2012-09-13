@@ -11,6 +11,6 @@ admin.email "trove@trove-instance"
 admin.keyname "trove"
 
 site.name "##TROVE_TITLE## for ##TROVE_COMPANY##"
-log.prefix "##TROVE_PREFIX##"
+log.prefix "##TROVE_LOG_PREFIX##"
 
 setup.batch = true

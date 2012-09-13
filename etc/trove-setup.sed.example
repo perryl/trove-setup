@@ -21,6 +21,12 @@ s/##MASON_PORT##/18755/
 s/##TROVE_TITLE##/FooCorp Embedded Projects/
 s/##TROVE_COMPANY##/FooCorp International Plc/
 
+## The log prefix for the Gitano instance on this trove.
+## This is shown as [##TROVE_LOG_PREFIX##] whenever Gitano needs to say 
+## something to the user.  Commonly this will be short form of the
+## title or company
+s/##TROVE_LOG_PREFIX##/foocorp-trove/
+
 ## The prefix used for personal repositories.  Default is 'people'
 ## Note, since this is ESC_ it should be lua-pattern escaped.
 s/##ESC_PERSONAL_PREFIX##/people/
