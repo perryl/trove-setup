@@ -11,6 +11,10 @@
 # Admins already got allowed, so this is for non-admin users only
 allow "Owners can always read and write" op_is_basic is_owner repo_is_personal
 
+# Any non-gitano-admin repo is readable to the lorry user and the worker group
+allow "Lorry may read" op_read !is_admin_repo is_lorry
+allow "Workers may read" op_read !is_admin_repo is_worker
+
 # Force /baserock and /delta to always be anon-readable which means git:// will
 # work.  This is part of the core ruleset for Baserock because /baserock/ and
 # /delta/ are always open source.
