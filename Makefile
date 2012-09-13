@@ -11,3 +11,4 @@ install:
 	cp cgit-head.inc "${DESTDIR}/etc/cgit-trove-head.inc"
 	mkdir -p "${DESTDIR}/var/www/htdocs"
 	cp http-assets/* "${DESTDIR}/var/www/htdocs"
+	ln -s cgit "${DESTDIR}/var/www/htdocs/cgi-bin"
