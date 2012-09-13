@@ -6,7 +6,7 @@ all: substitutions-done gitano-configured
 USERS := git lorry cache
 
 substitutions-done: /etc/trove-setup.sed hostname-not-baserock
-	sed -f /etc/trove-setup.sed \
+	sed -f /etc/trove-setup.sed -i \
                /usr/share/gitano/skel/gitano-admin/*/*.lace \
                /usr/share/gitano/skel/gitano-admin/*/*.lua \
 	       /etc/cgitrc /etc/gitano-setup.clod
