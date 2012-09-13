@@ -25,11 +25,10 @@ endef
 
 $(eval $(foreach USER,$(USERS),$(call make_user_rules,$(USER))))
 
-users: $(ALL_USER_TARGETS)
-
 gitano-setup: /home/git/.gitano-setup
-/home/git/.gitano-setup: users
+/home/git/.gitano-setup: $(ALL_USER_TARGETS)
 	su -c 'gitano-setup /etc/gitano-setup.clod' - git
+	passwd -u git
 	touch $@
 
 gitano-lorry-setup: /home/git/.gitano-lorry-setup
