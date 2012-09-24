@@ -3,4 +3,4 @@ Description=HTTP Daemon for Trove
 After=network.target
 
 [Service]
-ExecStart=/usr/sbin/httpd -u git:git -h /var/www/htdocs
+ExecStart=/usr/sbin/httpd -u git:git -h /var/www/htdocs -f
