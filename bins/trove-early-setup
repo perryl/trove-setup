@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 # -*- Make -*-
 
-all: substitutions-done gitano-configured
+all: substitutions-done gitano-configured lorry-configured
 
 USERS := git lorry cache
 
@@ -54,3 +54,10 @@ gitano-lorry-setup: /home/git/.gitano-lorry-setup
 	rm /tmp/lorry.pub
 
 gitano-configured: gitano-lorry-setup
+
+lorry-setup: /home/lorry/.lorry-setup
+/home/lorry/.lorry-setup: $(ALL_USER_TARGETS)
+	su -c 'mkdir /home/lorry/bundles /home/lorry/tarballs' - lorry
+	touch $@
+
+lorry-configured: lorry-setup
