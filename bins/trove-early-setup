@@ -9,6 +9,7 @@ substitutions-done: /etc/trove-setup.sed hostname-not-baserock
 	sed -f /etc/trove-setup.sed -i \
                /usr/share/gitano/skel/gitano-admin/*/*.lace \
                /usr/share/gitano/skel/gitano-admin/*/*.lua \
+               /usr/share/gitano/skel/users/*/user.conf \
 	       /etc/cgitrc /etc/gitano-setup.clod /etc/lorry.conf
 
 /etc/trove-setup.sed:
