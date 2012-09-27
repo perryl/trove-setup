@@ -4,3 +4,4 @@ After=network.target
 
 [Service]
 ExecStart=/usr/bin/git daemon --base-path=/home/git/repos --reuseaddr --user=git --group=git /home/git/repos
+Restart=always

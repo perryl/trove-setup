@@ -4,3 +4,4 @@ After=network.target
 
 [Service]
 ExecStart=/bin/su -c '/usr/bin/morph-cache-server --config=/etc/morph-cache-server-write.conf' - cache
+Restart=always
