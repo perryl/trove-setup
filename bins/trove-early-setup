@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 # -*- Make -*-
 
-all: substitutions-done gitano-configured lorry-configured
+all: substitutions-done gitano-configured lorry-configured cache-configured
 
 USERS := git lorry cache
 
@@ -62,3 +62,10 @@ lorry-setup: /home/lorry/.lorry-setup
 	touch $@
 
 lorry-configured: lorry-setup
+
+cache-setup: /home/cache/.cache-setup
+/home/cache/.cache-setup: $(ALL_USER_TARGETS)
+	su -c 'mkdir /home/cache/artifacts' - cache
+	touch $@
+
+cache-configured: cache-setup
