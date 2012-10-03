@@ -9,7 +9,7 @@ substitutions-done: /etc/trove-setup.sed hostname-not-baserock
 	sed -f /etc/trove-setup.sed -i \
                /usr/share/gitano/skel/gitano-admin/*/*.lace \
                /usr/share/gitano/skel/gitano-admin/*/*.lua \
-               /usr/share/gitano/skel/users/*/user.conf \
+               /usr/share/gitano/skel/gitano-admin/users/*/user.conf \
 	       /etc/cgitrc /etc/gitano-setup.clod /etc/lorry.conf
 
 /etc/trove-setup.sed:
@@ -42,8 +42,13 @@ endef
 
 $(eval $(foreach USER,$(USERS),$(call make_user_rules,$(USER))))
 
+git-setup: /home/git/.git-setup
+/home/git/.git-setup: $(ALL_USER_TARGETS)
+	su -c 'git config user.name "Trove Git Controller"' - git
+	su -c 'git config user.email "git@trove"' - git
+
 gitano-setup: /home/git/.gitano-setup
-/home/git/.gitano-setup: $(ALL_USER_TARGETS)
+/home/git/.gitano-setup: git-setup
 	su -c 'gitano-setup /etc/gitano-setup.clod' - git
 	passwd -u git
 	touch $@
@@ -61,7 +66,20 @@ lorry-setup: /home/lorry/.lorry-setup
 	su -c 'mkdir /home/lorry/bundles /home/lorry/tarballs' - lorry
 	touch $@
 
-lorry-configured: lorry-setup
+lorry-controller-configured: /home/lorry/.lorry-controller-setup
+/home/lorry/.lorry-controller-setup: /home/lorry/.lorry-setup /home/git/.gitano-lorry-setup
+	PREFIX=$$(echo "##PREFIX##" | sed -f /etc/trove-setup.sed); \
+	su -c "ssh localhost create $${PREFIX}/lorries" - git; \
+	su -c "git clone ssh://localhost/$${PREFIX}/lorries.git /tmp/lorries" - git; \
+	su -c "mkdir /home/lorry/lorry-controller-area" - lorry; \
+	su -c "git clone ssh://git@localhost/$${PREFIX}/lorries.git /home/lorry/lorry-controller-area/git" - lorry
+	su -c "sed -f /etc/trove-setup.sed < /usr/share/trove-setup/lorry-controller.conf > /tmp/lorries/lorry-controller.conf" - git
+	su -c "cd /tmp/lorries; git add lorry-controller.conf; git commit -m 'Initial configuration'; git push origin master" - git
+	su -c "rm -rf /tmp/lorries" - git
+	su -c "cd /home/lorry/lorry-controller-area/git; git remote update; git checkout master" - lorry
+	touch $@
+
+lorry-configured: lorry-setup lorry-controller-configured
 
 cache-setup: /home/cache/.cache-setup
 /home/cache/.cache-setup: $(ALL_USER_TARGETS)
