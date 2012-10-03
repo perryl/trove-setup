@@ -44,8 +44,8 @@ $(eval $(foreach USER,$(USERS),$(call make_user_rules,$(USER))))
 
 git-setup: /home/git/.git-setup
 /home/git/.git-setup: $(ALL_USER_TARGETS)
-	su -c 'git config user.name "Trove Git Controller"' - git
-	su -c 'git config user.email "git@trove"' - git
+	su -c 'git config --global user.name "Trove Git Controller"' - git
+	su -c 'git config --global user.email "git@trove"' - git
 
 gitano-setup: /home/git/.gitano-setup
 /home/git/.gitano-setup: git-setup
