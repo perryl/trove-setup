@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 # -*- Make -*-
 
-all: substitutions-done gitano-configured lorry-configured cache-configured
+all: substitutions-done gitano-configured lorry-configured cache-configured mason-configured
 
 USERS := git lorry cache
 
@@ -88,3 +88,15 @@ cache-setup: /home/cache/.cache-setup
 	touch $@
 
 cache-configured: cache-setup
+
+mason-setup: /home/git/.mason-setup
+/home/git/.mason-setup: gitano-configured
+	PREFIX=$$(echo "##PREFIX##" | sed -f /etc/trove-setup.sed); \
+	su -c "ssh localhost create $${PREFIX}/mason-config" - git; \
+	su -c "git clone ssh://localhost/$${PREFIX}/mason-config.git /tmp/mason-config" - git
+	su -c "cd /tmp/mason-config; mkdir ci1; echo '[]' > ci1/systems.json.txt" - git
+	su -c "cd /tmp/mason-config; echo '[]' > ci1/hosts.json.txt" - git
+	su -c "cd /tmp/mason-config; git add ci1; git commit -m 'Set initial Mason config'; git push origin master" - git
+	su -c "rm -fr /tmp/mason-config" - git
+
+mason-configured: mason-setup
