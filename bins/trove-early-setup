@@ -77,6 +77,7 @@ lorry-controller-configured: /home/lorry/.lorry-controller-setup
 	su -c "cd /tmp/lorries; git add lorry-controller.conf; git commit -m 'Initial configuration'; git push origin master" - git
 	su -c "rm -rf /tmp/lorries" - git
 	su -c "cd /home/lorry/lorry-controller-area/git; git remote update; git checkout master" - lorry
+	su -c "echo '*/5 * * * * flock -x -n /home/lorry/lorry-controller-area/lockfile -c lorry-controller --work-area=/home/lorry/lorry-controller-area' | crontab -" - lorry
 	touch $@
 
 lorry-configured: lorry-setup lorry-controller-configured
