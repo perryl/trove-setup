@@ -12,6 +12,7 @@ install:
 	cp http-assets/* "${DESTDIR}/var/www/htdocs"
 	ln -s cgit "${DESTDIR}/var/www/htdocs/cgi-bin"
 	ln -s /home/lorry/bundles "${DESTDIR}/var/www/htdocs/bundles"
+	ln -s /home/lorry/tarballs "${DESTDIR}/var/www/htdocs/tarballs"
 	mkdir -p "${DESTDIR}/usr/bin"
 	cp bins/* "${DESTDIR}/usr/bin/"
 	mkdir -p "${DESTDIR}/usr/share/trove-setup"
