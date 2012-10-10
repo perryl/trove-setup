@@ -98,5 +98,6 @@ define target_group_gitano_admin targetgroup gitano-admin
 
 define is_lorry user lorry
 define is_local_ref ref ~^refs/heads/##ESC_PREFIX##/
+define lorryable_repo allof !repo_is_local_project !repo_is_personal !is_admin_repo
 
 define is_worker group workers

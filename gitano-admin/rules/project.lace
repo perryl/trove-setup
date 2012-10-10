@@ -12,7 +12,7 @@
 allow "Owners can always read and write" op_is_basic is_owner repo_is_personal
 
 # Any non-gitano-admin repo is readable to the lorry user and the worker group
-allow "Lorry may read" op_read !is_admin_repo is_lorry
+allow "Lorry may read" op_read is_lorry lorryable_repo
 allow "Workers may read" op_read !is_admin_repo is_worker
 
 # Force /baserock and /delta to always be anon-readable which means git:// will
@@ -35,4 +35,4 @@ include global:adminchecks is_admin_ref
 allow "Owners can create refs" op_is_reffy is_owner repo_is_personal
 
 include global:trove-project repo_is_local_project
-include global:other-project !repo_is_personal !repo_is_local_project !is_admin_repo
+include global:other-project lorryable_repo

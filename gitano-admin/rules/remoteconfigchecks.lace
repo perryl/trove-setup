@@ -14,4 +14,7 @@ allow "Owners may remote-admin their repositories" is_owner repo_is_personal
 # *-admins may remote-admin their project's repositories
 allow "Project admins may admin project repos" repo_is_local_project project_admin
 
+# lorry may remote-admin lorryable repositories
+allow "Lorry may admin lorry repos" is_lorry lorryable_repo
+
 deny "You may not configure this repository remotely"

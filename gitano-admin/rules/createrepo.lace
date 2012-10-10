@@ -17,7 +17,7 @@
 allow "Project admins may make project repositories" repo_is_local_project project_admin
 
 # Allow lorry to create repositories anywhere but the local project root
-allow "Lorry may create repositories anywhere but the local root" !repo_is_local_project is_lorry
+allow "Lorry may create lorryable repos" is_lorry lorryable_repo
 
 # Otherwise the default is that non-admins can't create repositories
 deny "Repository creation is not permitted."
