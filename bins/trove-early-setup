@@ -70,9 +70,9 @@ lorry-controller-configured: /home/lorry/.lorry-controller-setup
 /home/lorry/.lorry-controller-setup: /home/lorry/.lorry-setup /home/git/.gitano-lorry-setup
 	PREFIX=$$(echo "##PREFIX##" | sed -f /etc/trove-setup.sed); \
 	su -c "ssh localhost create $${PREFIX}/lorries" - git; \
-	su -c "git clone ssh://localhost/$${PREFIX}/lorries.git /tmp/lorries" - git; \
+	su -c "git clone ssh://localhost/$${PREFIX}/local-config/lorries.git /tmp/lorries" - git; \
 	su -c "mkdir /home/lorry/lorry-controller-area" - lorry; \
-	su -c "git clone ssh://git@localhost/$${PREFIX}/lorries.git /home/lorry/lorry-controller-area/git" - lorry
+	su -c "git clone ssh://git@localhost/$${PREFIX}/local-config/lorries.git /home/lorry/lorry-controller-area/git" - lorry
 	su -c "sed -f /etc/trove-setup.sed < /usr/share/trove-setup/lorry-controller.conf > /tmp/lorries/lorry-controller.conf" - git
 	su -c "cd /tmp/lorries; git add lorry-controller.conf; git commit -m 'Initial configuration'; git push origin master" - git
 	su -c "rm -rf /tmp/lorries" - git
@@ -92,8 +92,8 @@ cache-configured: cache-setup
 mason-setup: /home/git/.mason-setup
 /home/git/.mason-setup: gitano-configured
 	PREFIX=$$(echo "##PREFIX##" | sed -f /etc/trove-setup.sed); \
-	su -c "ssh localhost create $${PREFIX}/mason-config" - git; \
-	su -c "git clone ssh://localhost/$${PREFIX}/mason-config.git /tmp/mason-config" - git
+	su -c "ssh localhost create $${PREFIX}/local-config/mason" - git; \
+	su -c "git clone ssh://localhost/$${PREFIX}/local-config/mason.git /tmp/mason-config" - git
 	su -c "cd /tmp/mason-config; mkdir ci1; echo '[]' > ci1/systems.json.txt" - git
 	su -c "cd /tmp/mason-config; echo '[]' > ci1/hosts.json.txt" - git
 	su -c "cd /tmp/mason-config; git add ci1; git commit -m 'Set initial Mason config'; git push origin master" - git
