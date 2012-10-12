@@ -5,6 +5,7 @@ css=/cgit/cgit.css
 logo=/trove.png
 
 head-include=/etc/cgit-trove-head.inc
+footer=/etc/cgit-trove-footer.inc
 
 enable-index-links=1
 root-title=##TROVE_TITLE## Git Repositories

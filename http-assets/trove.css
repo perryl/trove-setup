@@ -50,3 +50,80 @@ div#cgit table#header td.main > a:first-child {
    color: #adc81c !important;
 }
 
+/* lorry-controller */
+
+div.lorrycontroller {
+   background-color: white;
+}
+
+div.lorrycontroller table {
+   border-collapse: collapse;
+}
+
+div.lorrycontroller table#header {
+   width: 100%;
+}
+
+div.lorrycontroller table#header td.logo {
+   width: 96px;
+}
+
+div.lorrycontroller table#header td.main {
+   font-size: 250%;
+   white-space: nowrap;
+}
+
+div.lorrycontroller table.steps span {
+   padding-left: 1em;
+   padding-right: 1em;
+   margin-left: 0.5em;
+   margin-right: 0.5em;
+}
+
+div.lorrycontroller table.steps span.donestep {
+   background-color: #c5c8b4 !important;
+}
+
+div.lorrycontroller table.steps span.pendingstep {
+   color: #ccc;
+}
+
+div.lorrycontroller table.steps span.activestep {
+   background-color: #adc81c !important;
+}
+
+div.lorrycontroller table.steps {
+   border-bottom: solid 3px #adc81c !important;
+   width: 100%;
+   margin-top: 2em;
+   margin-bottom: 0px;
+   border-collapse: collapse;
+}
+
+div.lorrycontroller table.steps td {
+   padding: 0px;
+}
+
+div.lorrycontroller div#troves, div.lorrycontroller div#lorries {
+   margin: 1em;
+}
+
+div#troves table, div#lorries table {
+   border: 3px solid #adc81c;
+   border-collapse: collapse;
+}
+
+div#troves table tr, div#lorries table tr {
+   border: 1px solid #adc81c;
+}
+
+div#troves table th, div#lorries table th {
+   border: 2px solid #adc81c;
+}
+
+div#troves table td, div#lorries table td {
+   border: 2px solid #adc81c;
+   padding-left: 0.5em;
+   padding-right: 0.5em;
+}
+
