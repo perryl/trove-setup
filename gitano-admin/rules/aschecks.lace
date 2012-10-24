@@ -15,10 +15,11 @@
 define as_is_admin as_group gitano-admin
 
 # trove-admin members are permitted to run sshkey and whoami on behalf
-# of others in order to check users and grant access
+# of others in order to check users and grant access, providing the target
+# user is not part of the gitano-admin group.
 
 define as_is_trove_admin as_group trove-admin
-define as_trove_admin_ok allof as_is_trove_admin op_self
+define as_trove_admin_ok allof as_is_trove_admin !is_admin op_self
 
 # You are permitted to do things 'as' others if and only if the caller is
 # either a member of the administration group, or else meets the above
