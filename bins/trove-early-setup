@@ -69,7 +69,7 @@ lorry-setup: /home/lorry/.lorry-setup
 lorry-controller-configured: /home/lorry/.lorry-controller-setup
 /home/lorry/.lorry-controller-setup: /home/lorry/.lorry-setup /home/git/.gitano-lorry-setup
 	PREFIX=$$(echo "##PREFIX##" | sed -f /etc/trove-setup.sed); \
-	su -c "ssh localhost create $${PREFIX}/lorries" - git; \
+	su -c "ssh localhost create $${PREFIX}/local-config/lorries" - git; \
 	su -c "git clone ssh://localhost/$${PREFIX}/local-config/lorries.git /tmp/lorries" - git; \
 	su -c "mkdir /home/lorry/lorry-controller-area" - lorry; \
 	su -c "git clone ssh://git@localhost/$${PREFIX}/local-config/lorries.git /home/lorry/lorry-controller-area/git" - lorry
