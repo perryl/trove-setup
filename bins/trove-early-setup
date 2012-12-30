@@ -86,6 +86,10 @@ lorry-configured: lorry-setup lorry-controller-configured
 cache-setup: /home/cache/.cache-setup
 /home/cache/.cache-setup: $(ALL_USER_TARGETS)
 	su -c 'mkdir /home/cache/artifacts' - cache
+	su -c 'mkdir /home/cache/ccache' - cache
+	echo '/home/cache/ccache *(rw,all_squash,no_subtree_check,anonuid=1002,anongid=1002)' > /etc/exports
+	systemctl enable nfs-server.service
+	systemctl start nfs-server.service
 	touch $@
 
 cache-configured: cache-setup
