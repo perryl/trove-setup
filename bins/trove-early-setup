@@ -1,9 +1,9 @@
 #!/usr/bin/make -f
 # -*- Make -*-
 
-all: substitutions-done gitano-configured lorry-configured cache-configured mason-configured
+all: substitutions-done gitano-configured lorry-configured cache-configured mason-configured nfs-configured
 
-USERS := git lorry cache
+USERS := git lorry cache mason
 
 .PHONY: substitutions-done
 substitutions-done: /etc/trove-setup.sed hostname-not-baserock
@@ -86,9 +86,7 @@ lorry-configured: /home/lorry/.lorry-setup /home/lorry/.lorry-controller-setup
 /home/cache/.cache-setup: $(ALL_USER_TARGETS)
 	su -c 'mkdir /home/cache/artifacts' - cache
 	su -c 'mkdir /home/cache/ccache' - cache
-	echo '/home/cache/ccache *(rw,all_squash,no_subtree_check,anonuid=1002,anongid=1002)' > /etc/exports
-	systemctl enable nfs-server.service
-	systemctl start nfs-server.service
+	echo '/home/cache/ccache *(rw,all_squash,no_subtree_check,anonuid=1002,anongid=1002)' > /etc/exports.cache
 	touch $@
 
 .PHONY: cache-configured
@@ -102,7 +100,17 @@ cache-configured: /home/cache/.cache-setup
 	su -c "cd /tmp/mason-config; (echo '['; echo ']') > ci1/hosts.json.txt" - git
 	su -c "cd /tmp/mason-config; git add ci1; git commit -m 'Set initial Mason config'; git push origin master" - git
 	su -c "rm -fr /tmp/mason-config" - git
+	su -c 'mkdir /home/mason/jobs' - mason
+	echo '/home/mason/jobs *(rw,all_squash,no_subtree_check,anonuid=1003,anongid=1003)' > /etc/exports.mason
 	touch $@
 
 .PHONY: mason-configured
 mason-configured: /home/git/.mason-setup
+
+/etc/exports: /home/cache/.cache-setup /home/git/.mason-setup
+	cat /etc/exports.cache /etc/exports.mason >/etc/exports
+	systemctl enable nfs-server.service
+	systemctl start nfs-server.service
+
+.PHONY: nfs-configured
+nfs-configured: /etc/exports
