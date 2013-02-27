@@ -5,6 +5,7 @@ all: substitutions-done gitano-configured lorry-configured cache-configured maso
 
 USERS := git lorry cache
 
+.PHONY: substitutions-done
 substitutions-done: /etc/trove-setup.sed hostname-not-baserock
 	sed -f /etc/trove-setup.sed -i \
                /usr/share/gitano/skel/gitano-admin/*/*.lace \
@@ -56,6 +57,7 @@ $(eval $(foreach USER,$(USERS),$(call make_user_rules,$(USER))))
 	su -c 'ssh git@localhost as lorry sshkey add trove < /tmp/lorry.pub' - git
 	rm /tmp/lorry.pub
 
+.PHONY: gitano-configured
 gitano-configured: /home/git/.gitano-setup
 
 /home/lorry/.lorry-setup: $(ALL_USER_TARGETS)
@@ -76,6 +78,7 @@ gitano-configured: /home/git/.gitano-setup
 	su -c "echo '*/1 * * * * flock -x -n /home/lorry/lorry-controller-area/lockfile -c lorry-controller --work-area=/home/lorry/lorry-controller-area --log=syslog --log-level=info --html-file=/home/lorry/lc-status.html' | crontab -" - lorry
 	touch $@
 
+.PHONY: lorry-configured
 lorry-configured: /home/lorry/.lorry-setup /home/lorry/.lorry-controller-setup
 
 /home/cache/.cache-setup: $(ALL_USER_TARGETS)
@@ -86,6 +89,7 @@ lorry-configured: /home/lorry/.lorry-setup /home/lorry/.lorry-controller-setup
 	systemctl start nfs-server.service
 	touch $@
 
+.PHONY: cache-configured
 cache-configured: /home/cache/.cache-setup
 
 /home/git/.mason-setup: /home/git/.gitano-setup $(ALL_USER_TARGETS)
@@ -97,4 +101,5 @@ cache-configured: /home/cache/.cache-setup
 	su -c "cd /tmp/mason-config; git add ci1; git commit -m 'Set initial Mason config'; git push origin master" - git
 	su -c "rm -fr /tmp/mason-config" - git
 
+.PHONY: mason-configured
 mason-configured: /home/git/.mason-setup
