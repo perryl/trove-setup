@@ -46,6 +46,7 @@ $(eval $(foreach USER,$(USERS),$(call make_user_rules,$(USER))))
 /home/git/.git-setup: $(ALL_USER_TARGETS)
 	su -c 'git config --global user.name "Trove Git Controller"' - git
 	su -c 'git config --global user.email "git@trove"' - git
+	touch $@
 
 /home/git/.gitano-setup: /home/git/.git-setup
 	su -c 'gitano-setup /etc/gitano-setup.clod' - git
@@ -56,6 +57,7 @@ $(eval $(foreach USER,$(USERS),$(call make_user_rules,$(USER))))
 	cp /home/lorry/.ssh/id_rsa.pub /tmp/lorry.pub
 	su -c 'ssh git@localhost as lorry sshkey add trove < /tmp/lorry.pub' - git
 	rm /tmp/lorry.pub
+	touch $@
 
 .PHONY: gitano-configured
 gitano-configured: /home/git/.gitano-setup
@@ -100,6 +102,7 @@ cache-configured: /home/cache/.cache-setup
 	su -c "cd /tmp/mason-config; (echo '['; echo ']') > ci1/hosts.json.txt" - git
 	su -c "cd /tmp/mason-config; git add ci1; git commit -m 'Set initial Mason config'; git push origin master" - git
 	su -c "rm -fr /tmp/mason-config" - git
+	touch $@
 
 .PHONY: mason-configured
 mason-configured: /home/git/.mason-setup
