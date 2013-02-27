@@ -42,31 +42,26 @@ endef
 
 $(eval $(foreach USER,$(USERS),$(call make_user_rules,$(USER))))
 
-git-setup: /home/git/.git-setup
 /home/git/.git-setup: $(ALL_USER_TARGETS)
 	su -c 'git config --global user.name "Trove Git Controller"' - git
 	su -c 'git config --global user.email "git@trove"' - git
 
-gitano-setup: /home/git/.gitano-setup
-/home/git/.gitano-setup: git-setup
+/home/git/.gitano-setup: /home/git/.git-setup
 	su -c 'gitano-setup /etc/gitano-setup.clod' - git
 	passwd -u git
 	touch $@
 
-gitano-lorry-setup: /home/git/.gitano-lorry-setup
-/home/git/.gitano-lorry-setup: gitano-setup
+/home/git/.gitano-lorry-setup: /home/git/.gitano-setup
 	cp /home/lorry/.ssh/id_rsa.pub /tmp/lorry.pub
 	su -c 'ssh git@localhost as lorry sshkey add trove < /tmp/lorry.pub' - git
 	rm /tmp/lorry.pub
 
-gitano-configured: gitano-lorry-setup
+gitano-configured: /home/git/.gitano-setup
 
-lorry-setup: /home/lorry/.lorry-setup
 /home/lorry/.lorry-setup: $(ALL_USER_TARGETS)
 	su -c 'mkdir /home/lorry/bundles /home/lorry/tarballs' - lorry
 	touch $@
 
-lorry-controller-configured: /home/lorry/.lorry-controller-setup
 /home/lorry/.lorry-controller-setup: /home/lorry/.lorry-setup /home/git/.gitano-lorry-setup
 	PREFIX=$$(echo "##PREFIX##" | sed -f /etc/trove-setup.sed); \
 	su -c "ssh localhost create $${PREFIX}/local-config/lorries" - git; \
@@ -81,9 +76,8 @@ lorry-controller-configured: /home/lorry/.lorry-controller-setup
 	su -c "echo '*/1 * * * * flock -x -n /home/lorry/lorry-controller-area/lockfile -c lorry-controller --work-area=/home/lorry/lorry-controller-area --log=syslog --log-level=info --html-file=/home/lorry/lc-status.html' | crontab -" - lorry
 	touch $@
 
-lorry-configured: lorry-setup lorry-controller-configured
+lorry-configured: /home/lorry/.lorry-setup /home/lorry/.lorry-controller-setup
 
-cache-setup: /home/cache/.cache-setup
 /home/cache/.cache-setup: $(ALL_USER_TARGETS)
 	su -c 'mkdir /home/cache/artifacts' - cache
 	su -c 'mkdir /home/cache/ccache' - cache
@@ -92,10 +86,9 @@ cache-setup: /home/cache/.cache-setup
 	systemctl start nfs-server.service
 	touch $@
 
-cache-configured: cache-setup
+cache-configured: /home/cache/.cache-setup
 
-mason-setup: /home/git/.mason-setup
-/home/git/.mason-setup: gitano-configured
+/home/git/.mason-setup: /home/git/.gitano-setup $(ALL_USER_TARGETS)
 	PREFIX=$$(echo "##PREFIX##" | sed -f /etc/trove-setup.sed); \
 	su -c "ssh localhost create $${PREFIX}/local-config/mason" - git; \
 	su -c "git clone ssh://localhost/$${PREFIX}/local-config/mason.git /tmp/mason-config" - git
@@ -104,4 +97,4 @@ mason-setup: /home/git/.mason-setup
 	su -c "cd /tmp/mason-config; git add ci1; git commit -m 'Set initial Mason config'; git push origin master" - git
 	su -c "rm -fr /tmp/mason-config" - git
 
-mason-configured: mason-setup
+mason-configured: /home/git/.mason-setup
