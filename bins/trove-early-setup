@@ -1,10 +1,11 @@
 #!/usr/bin/make -f
 # -*- Make -*-
 
-all: substitutions-done gitano-configured lorry-configured cache-configured mason-configured
+all: substitutions-done gitano-configured lorry-configured cache-configured mason-configured nfs-configured
 
-USERS := git lorry cache
+USERS := git lorry cache mason
 
+.PHONY: substitutions-done
 substitutions-done: /etc/trove-setup.sed hostname-not-baserock
 	sed -f /etc/trove-setup.sed -i \
                /usr/share/gitano/skel/gitano-admin/*/*.lace \
@@ -42,31 +43,29 @@ endef
 
 $(eval $(foreach USER,$(USERS),$(call make_user_rules,$(USER))))
 
-git-setup: /home/git/.git-setup
 /home/git/.git-setup: $(ALL_USER_TARGETS)
 	su -c 'git config --global user.name "Trove Git Controller"' - git
 	su -c 'git config --global user.email "git@trove"' - git
+	touch $@
 
-gitano-setup: /home/git/.gitano-setup
-/home/git/.gitano-setup: git-setup
+/home/git/.gitano-setup: /home/git/.git-setup
 	su -c 'gitano-setup /etc/gitano-setup.clod' - git
 	passwd -u git
 	touch $@
 
-gitano-lorry-setup: /home/git/.gitano-lorry-setup
-/home/git/.gitano-lorry-setup: gitano-setup
+/home/git/.gitano-lorry-setup: /home/git/.gitano-setup
 	cp /home/lorry/.ssh/id_rsa.pub /tmp/lorry.pub
 	su -c 'ssh git@localhost as lorry sshkey add trove < /tmp/lorry.pub' - git
 	rm /tmp/lorry.pub
+	touch $@
 
-gitano-configured: gitano-lorry-setup
+.PHONY: gitano-configured
+gitano-configured: /home/git/.gitano-setup
 
-lorry-setup: /home/lorry/.lorry-setup
 /home/lorry/.lorry-setup: $(ALL_USER_TARGETS)
 	su -c 'mkdir /home/lorry/bundles /home/lorry/tarballs' - lorry
 	touch $@
 
-lorry-controller-configured: /home/lorry/.lorry-controller-setup
 /home/lorry/.lorry-controller-setup: /home/lorry/.lorry-setup /home/git/.gitano-lorry-setup
 	PREFIX=$$(echo "##PREFIX##" | sed -f /etc/trove-setup.sed); \
 	su -c "ssh localhost create $${PREFIX}/local-config/lorries" - git; \
@@ -81,21 +80,19 @@ lorry-controller-configured: /home/lorry/.lorry-controller-setup
 	su -c "echo '*/1 * * * * flock -x -n /home/lorry/lorry-controller-area/lockfile -c lorry-controller --work-area=/home/lorry/lorry-controller-area --log=syslog --log-level=info --html-file=/home/lorry/lc-status.html' | crontab -" - lorry
 	touch $@
 
-lorry-configured: lorry-setup lorry-controller-configured
+.PHONY: lorry-configured
+lorry-configured: /home/lorry/.lorry-setup /home/lorry/.lorry-controller-setup
 
-cache-setup: /home/cache/.cache-setup
 /home/cache/.cache-setup: $(ALL_USER_TARGETS)
 	su -c 'mkdir /home/cache/artifacts' - cache
 	su -c 'mkdir /home/cache/ccache' - cache
-	echo '/home/cache/ccache *(rw,all_squash,no_subtree_check,anonuid=1002,anongid=1002)' > /etc/exports
-	systemctl enable nfs-server.service
-	systemctl start nfs-server.service
+	echo '/home/cache/ccache *(rw,all_squash,no_subtree_check,anonuid=1002,anongid=1002)' > /etc/exports.cache
 	touch $@
 
-cache-configured: cache-setup
+.PHONY: cache-configured
+cache-configured: /home/cache/.cache-setup
 
-mason-setup: /home/git/.mason-setup
-/home/git/.mason-setup: gitano-configured
+/home/git/.mason-setup: /home/git/.gitano-setup $(ALL_USER_TARGETS)
 	PREFIX=$$(echo "##PREFIX##" | sed -f /etc/trove-setup.sed); \
 	su -c "ssh localhost create $${PREFIX}/local-config/mason" - git; \
 	su -c "git clone ssh://localhost/$${PREFIX}/local-config/mason.git /tmp/mason-config" - git
@@ -103,5 +100,15 @@ mason-setup: /home/git/.mason-setup
 	su -c "cd /tmp/mason-config; (echo '['; echo ']') > ci1/hosts.json.txt" - git
 	su -c "cd /tmp/mason-config; git add ci1; git commit -m 'Set initial Mason config'; git push origin master" - git
 	su -c "rm -fr /tmp/mason-config" - git
+	su -c 'mkdir /home/mason/jobs' - mason
+	echo '/home/mason/jobs *(rw,all_squash,no_subtree_check,anonuid=1003,anongid=1003)' > /etc/exports.mason
+	touch $@
 
-mason-configured: mason-setup
+.PHONY: mason-configured
+mason-configured: /home/git/.mason-setup
+
+/etc/exports: /home/cache/.cache-setup /home/git/.mason-setup
+	cat /etc/exports.cache /etc/exports.mason >/etc/exports
+
+.PHONY: nfs-configured
+nfs-configured: /etc/exports
