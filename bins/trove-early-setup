@@ -96,8 +96,9 @@ cache-configured: /home/cache/.cache-setup
 	PREFIX=$$(echo "##PREFIX##" | sed -f /etc/trove-setup.sed); \
 	su -c "ssh localhost create $${PREFIX}/local-config/mason" - git; \
 	su -c "git clone ssh://localhost/$${PREFIX}/local-config/mason.git /tmp/mason-config" - git
-	su -c "cd /tmp/mason-config; mkdir ci1; (echo '[';echo ']') > ci1/systems.json.txt" - git
+	su -c "mkdir /tmp/mason-config/ci1" - git
 	su -c "cp /var/lib/trove-setup/hosts.json.txt /tmp/mason-config/ci1" - git
+	su -c "cp /var/lib/trove-setup/systems.json.txt /tmp/mason-config/ci1" - git
 	su -c "cd /tmp/mason-config; git add ci1; git commit -m 'Set initial Mason config'; git push origin master" - git
 	su -c "rm -fr /tmp/mason-config" - git
 	su -c 'mkdir /home/mason/jobs' - mason
