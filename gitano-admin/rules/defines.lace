@@ -4,7 +4,7 @@
 #   | || | | (_) \ V /  __/
 #   |_||_|  \___/ \_/ \___|
 #
-# Copyright 2012 Codethink Limited
+# Copyright 2012,2013 Codethink Limited
 #
 # Core definitions for access control
 
@@ -82,6 +82,7 @@ define is_admin_ref ref refs/gitano/admin
 #
 
 define repo_is_personal repository ~^##ESC_PERSONAL_PREFIX##/${user}/
+define ref_is_personal ref ~^refs/heads/##ESC_PREFIX##/${user}/
 define repo_is_local_project repository ~^##ESC_PREFIX##/[^/]+/
 
 define project_reader  group ${repository/2}-readers
