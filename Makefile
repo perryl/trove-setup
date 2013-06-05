@@ -17,4 +17,4 @@ install:
 	mkdir -p "${DESTDIR}/usr/bin"
 	cp bins/* "${DESTDIR}/usr/bin/"
 	mkdir -p "${DESTDIR}/usr/share/trove-setup"
-	cp share/* "${DESTDIR}/usr/share/trove-setup/"
+	cp -r share/* "${DESTDIR}/usr/share/trove-setup/"
