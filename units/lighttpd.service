@@ -1,0 +1,7 @@
+[Unit]
+Description=Lighttpd Web Server
+After=network.target
+
+[Service]
+ExecStart=/usr/sbin/lighttpd -f /etc/lighttpd.conf -D
+Restart=always
