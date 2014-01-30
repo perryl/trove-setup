@@ -17,3 +17,9 @@ install:
 	cp bins/* "${DESTDIR}/usr/bin/"
 	mkdir -p "${DESTDIR}/usr/share/trove-setup"
 	cp -r share/* "${DESTDIR}/usr/share/trove-setup/"
+
+	ln -s /usr/lib/gitano/bin/gitano-command.cgi \
+		"${DESTDIR}/var/www/htdocs/gitano-command.cgi"
+
+	ln -s /usr/lib/gitano/bin/gitano-smart-http.cgi \
+		"${DESTDIR}/var/www/htdocs/gitano-smart-http.cgi"
