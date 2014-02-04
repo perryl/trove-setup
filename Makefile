@@ -6,8 +6,7 @@ install:
 	for I in $$(cd units; ls); do \
 		ln -sf ../$$I "${DESTDIR}/usr/lib/systemd/system/multi-user.target.wants/$$I"; \
 	done
-	mkdir -p "${DESTDIR}/etc"
-	cp etc/* "${DESTDIR}/etc"
+	cp -r etc "${DESTDIR}"
 	mkdir -p "${DESTDIR}/var/www/htdocs"
 	cp http-assets/* "${DESTDIR}/var/www/htdocs"
 	ln -s cgit "${DESTDIR}/var/www/htdocs/cgi-bin"
