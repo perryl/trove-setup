@@ -13,4 +13,6 @@ admin.keyname "trove"
 site.name "##TROVE_TITLE## for ##TROVE_COMPANY##"
 log.prefix "##TROVE_LOG_PREFIX##"
 
+use.htpasswd "yes"
+
 setup.batch = true
