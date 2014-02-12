@@ -13,6 +13,7 @@
 # User/group related
 define is_admin group gitano-admin
 define is_owner owner ${user}
+define is_anonymous user gitano/anonymous
 
 define if_asanother as_user ~.
 
