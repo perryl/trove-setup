@@ -12,7 +12,7 @@
 
 # There are two classes of accessors here.  Lorry and Others
 allow "Anyone may read here" op_read
-allow "Anyone may write here" op_write
+allow "Anyone may write here" op_write !is_anonymous
 
 # Lorry can do anything reffy which is not inside the local refs
 allow "Lorry may touch everything but refs/heads/##PREFIX##" op_is_reffy is_lorry !is_local_ref

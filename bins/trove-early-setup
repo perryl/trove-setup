@@ -18,7 +18,7 @@
 # -*- Make -*-
 
 
-all: substitutions-done gitano-configured lorry-configured cache-configured mason-configured nfs-configured
+all: substitutions-done gitano-configured lorry-configured cache-configured mason-configured nfs-configured cert-generated
 
 USERS := git lorry cache mason
 
@@ -134,3 +134,13 @@ mason-configured: /home/git/.mason-setup
 
 .PHONY: nfs-configured
 nfs-configured: /etc/exports
+
+/home/git/.cert-generated:
+	mkdir -p /etc/lighttpd/certs
+	echo -ne '\n\n\n\n\n\n\n' | openssl req -new -x509 \
+		-keyout /etc/lighttpd/certs/lighttpd.pem \
+		-out /etc/lighttpd/certs/lighttpd.pem -days 36525 -nodes
+	touch $@
+
+.PHONY: cert-generated
+cert-generated: /home/git/.cert-generated

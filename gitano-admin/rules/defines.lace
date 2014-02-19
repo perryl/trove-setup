@@ -13,13 +13,15 @@
 # User/group related
 define is_admin group gitano-admin
 define is_owner owner ${user}
+define is_anonymous user gitano/anonymous
 
 define if_asanother as_user ~.
 
 # Self-related operations
 define op_whoami operation whoami
 define op_sshkey operation sshkey
-define op_self anyof op_whoami op_sshkey
+define op_passwd operation passwd
+define op_self anyof op_whoami op_sshkey op_passwd
 
 # Admin-related operations
 
