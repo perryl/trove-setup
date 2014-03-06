@@ -1,4 +1,4 @@
-clone-prefix=ssh://git@##TROVE_HOSTNAME##
+clone-prefix=git://##TROVE_HOSTNAME## http://##TROVE_HOSTNAME##/git https://##TROVE_HOSTNAME##/git ssh://git@##TROVE_HOSTNAME##
 strict-export=git-daemon-export-ok
 
 css=/cgit/cgit.css

@@ -3,36 +3,36 @@
 # Hostnames
 
 ## This is the hostname for the Trove instance itself
-s/##TROVE_HOSTNAME##/trove-host/
+s/##TROVE_HOSTNAME##/trove-host/g
 
 ## This is the hostname for the Mason which Trove is linking to
-s/##MASON_HOST##/mason-host/
+s/##MASON_HOST##/mason-host/g
 
 # Ports in use
 
 ## This is the port for Mason.  Normally it'll be 18755
-s/##MASON_PORT##/18755/
+s/##MASON_PORT##/18755/g
 
 # Configuration for the CGit instance and Gitano setup
 
 ## The title for this trove.  '##TROVE_TITLE## Git Repositories' in
 ## the CGit root page.  Also '##TROVE_TITLE## for ##TROVE_COMPANY##' in
 ## the Gitano site description field
-s/##TROVE_TITLE##/FooCorp Embedded Projects/
-s/##TROVE_COMPANY##/FooCorp International Plc/
+s/##TROVE_TITLE##/FooCorp Embedded Projects/g
+s/##TROVE_COMPANY##/FooCorp International Plc/g
 
 ## The log prefix for the Gitano instance on this trove.
 ## This is shown as [##TROVE_LOG_PREFIX##] whenever Gitano needs to say 
 ## something to the user.  Commonly this will be short form of the
 ## title or company
-s/##TROVE_LOG_PREFIX##/foocorp-trove/
+s/##TROVE_LOG_PREFIX##/foocorp-trove/g
 
 ## The prefix used for personal repositories.  Default is 'people'
 ## Note, since this is ESC_ it should be lua-pattern escaped.
-s/##ESC_PERSONAL_PREFIX##/people/
+s/##ESC_PERSONAL_PREFIX##/people/g
 
 ## The prefix used for branches and repositories for this Trove
-s/##PREFIX##/trove-prefix/
+s/##PREFIX##/trove-prefix/g
 ## The same prefix as above, only lua-pattern-escaped
-s/##ESC_PREFIX##/trove%-prefix/
+s/##ESC_PREFIX##/trove%-prefix/g
 
