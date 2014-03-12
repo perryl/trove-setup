@@ -18,27 +18,9 @@
 # -*- Make -*-
 
 
-all: substitutions-done gitano-configured lorry-configured cache-configured mason-configured nfs-configured cert-generated
+all: gitano-configured lorry-configured cache-configured mason-configured nfs-configured cert-generated
 
 USERS := git lorry cache mason
-
-.PHONY: substitutions-done
-substitutions-done: /etc/trove-setup.sed hostname-not-baserock
-	sed -f /etc/trove-setup.sed -i \
-               /usr/share/gitano/skel/gitano-admin/*/*.lace \
-               /usr/share/gitano/skel/gitano-admin/*/*.lua \
-               /usr/share/gitano/skel/gitano-admin/users/*/user.conf \
-	       /etc/cgitrc /etc/gitano-setup.clod /etc/lorry.conf
-
-/etc/trove-setup.sed:
-	@echo "You need to create $@ to continue."
-	@echo "There is $@.example which you can work from."
-	@echo "re-run trove-early-setup once you're done with this."
-	@exit 1
-
-.PHONY: hostname-not-baserock
-hostname-not-baserock:
-	test "x$$(hostname)" != "baserock"
 
 # $1 == username to make
 define make_user_rules
