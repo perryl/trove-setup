@@ -69,8 +69,6 @@ gitano-configured: /home/git/.gitano-setup
 	PREFIX=$$(echo "##PREFIX##" | sed -f /etc/trove-setup.sed); \
 	su -c "ssh localhost create $${PREFIX}/local-config/lorries" - git; \
 	su -c "git clone ssh://localhost/$${PREFIX}/local-config/lorries.git /tmp/lorries" - git; \
-	su -c "mkdir /home/lorry/lorry-controller-area" - lorry; \
-	su -c "git clone ssh://git@localhost/$${PREFIX}/local-config/lorries.git /home/lorry/lorry-controller-area/git" - lorry
 	su -c "sed -f /etc/trove-setup.sed < /usr/share/trove-setup/lorry-controller.conf > /tmp/lorries/lorry-controller.conf" - git
 	su -c "sed -f /etc/trove-setup.sed < /usr/share/trove-setup/README.lorry-controller > /tmp/lorries/README" - git
 	su -c "mkdir /tmp/lorries/open-source-lorries" - git
@@ -79,7 +77,6 @@ gitano-configured: /home/git/.gitano-setup
 	su -c "cp /usr/share/trove-setup/closed-source-lorries/README /tmp/lorries/closed-source-lorries/README" - git
 	su -c "cd /tmp/lorries; git add README lorry-controller.conf open-source-lorries/README closed-source-lorries/README; git commit -m 'Initial configuration'; git push origin master" - git
 	su -c "rm -rf /tmp/lorries" - git
-	su -c "cd /home/lorry/lorry-controller-area/git; git remote update; git checkout master" - lorry
 	touch $@
 
 .PHONY: lorry-configured
