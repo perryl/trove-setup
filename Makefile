@@ -13,6 +13,7 @@ install:
 	ln -s /home/lorry/bundles "${DESTDIR}/var/www/htdocs/bundles"
 	ln -s /home/lorry/tarballs "${DESTDIR}/var/www/htdocs/tarballs"
 	ln -s /home/lorry/lc-status.html "${DESTDIR}/var/www/htdocs/lc-status.html"
+	ln -s /usr/share/lorry-controller/static/ "${DESTDIR}/var/www/htdocs/lc-static"
 	mkdir -p "${DESTDIR}/usr/bin"
 	cp bins/* "${DESTDIR}/usr/bin/"
 	mkdir -p "${DESTDIR}/usr/share/trove-setup"
