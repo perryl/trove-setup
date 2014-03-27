@@ -1,0 +1,11 @@
+site/releases repository
+------------------------
+
+This is a special repository for distributing release binaries over HTTP.
+Visit http://##PREFIX##/releases/ to browse content.
+
+To add a release to this repository, you need to be a member of the
+Gitano group site-writers. With the correct permissions, you can push
+releases to the repository by doing:
+
+   rsync $RELEASE git@##PREFIX##:##PREFIX##/site/releases
