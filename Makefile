@@ -16,6 +16,8 @@ install:
 	ln -s /usr/share/lorry-controller/static/ "${DESTDIR}/var/www/htdocs/lc-static"
 	mkdir -p "${DESTDIR}/usr/bin"
 	cp bins/* "${DESTDIR}/usr/bin/"
+	mkdir -p "${DESTDIR}/usr/libexec"
+	cp libexecs/* "${DESTDIR}/usr/libexec/"
 	mkdir -p "${DESTDIR}/usr/share/trove-setup"
 	cp -r share/* "${DESTDIR}/usr/share/trove-setup/"
 
