@@ -14,10 +14,6 @@ install:
 	ln -s /home/lorry/tarballs "${DESTDIR}/var/www/htdocs/tarballs"
 	ln -s /home/lorry/lc-status.html "${DESTDIR}/var/www/htdocs/lc-status.html"
 	ln -s /usr/share/lorry-controller/static/ "${DESTDIR}/var/www/htdocs/lc-static"
-	mkdir -p "${DESTDIR}/usr/bin"
-	cp bins/* "${DESTDIR}/usr/bin/"
-	mkdir -p "${DESTDIR}/usr/libexec"
-	cp libexecs/* "${DESTDIR}/usr/libexec/"
 	mkdir -p "${DESTDIR}/usr/share/trove-setup"
 	cp -r share/* "${DESTDIR}/usr/share/trove-setup/"
 
