@@ -10,8 +10,8 @@ admin.realname "Trove Instance Administrator"
 admin.email "trove@trove-instance"
 admin.keyname "trove"
 
-site.name "##TROVE_TITLE## for ##TROVE_COMPANY##"
-log.prefix "##TROVE_LOG_PREFIX##"
+site.name "{{ TROVE_ID }} for {{ TROVE_COMPANY }}"
+log.prefix "{{ TROVE_ID }}"
 
 use.htpasswd "yes"
 

@@ -14,5 +14,5 @@ scenarios regarding adding external software to your Trove before attempting to
 add any additional configuration to this repository.
 
 Remember, the Lorry tool is not permitted to manage repositories inside your
-prefix which is ##PREFIX##.
+prefix which is {{ TROVE_ID }}.
 

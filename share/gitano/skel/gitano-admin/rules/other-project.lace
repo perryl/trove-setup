@@ -6,7 +6,7 @@
 #
 # Copyright 2012,2013 Codethink Limited
 #
-# Rules for any repository not under ##PREFIX##
+# Rules for any repository not under {{ TROVE_ID }}
 
 # This is, by default, /baserock/ and /delta/
 
@@ -15,11 +15,11 @@ allow "Anyone may read here" op_read
 allow "Anyone may write here" op_write !is_anonymous
 
 # Lorry can do anything reffy which is not inside the local refs
-allow "Lorry may touch everything but refs/heads/##PREFIX##" op_is_reffy is_lorry !is_local_ref
+allow "Lorry may touch everything but refs/heads/{{ TROVE_ID }}" op_is_reffy is_lorry !is_local_ref
 
 # Noone can rewind/rebase outside of their personal refs
 deny "Non-personal branches may not be rewound/rebased" op_forcedupdate !is_lorry !ref_is_personal
 
-# Everyone else can do reffy things inside refs/heads/##PREFIX##
+# Everyone else can do reffy things inside refs/heads/{{ TROVE_ID }}
 allow "Project writers may alter any refs" op_is_reffy !is_lorry is_local_ref
 

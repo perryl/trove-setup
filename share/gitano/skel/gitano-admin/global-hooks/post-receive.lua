@@ -14,11 +14,11 @@ local project_hook, repo, updates = ...
 
 local EMPTY_SHA = ("0"):rep(40)
 
-local masonhost = "##MASON_HOST##:##MASON_PORT##"
+local masonhost = "{{ MASON_ID }}:{{ MASON_PORT }}"
 local basepath = "/1.0"
 local urlbases = {
-   "git://##TROVE_HOSTNAME##/",
-   "ssh://git@##TROVE_HOSTNAME##/",
+   "git://{{ TROVE_HOSTNAME }}/",
+   "ssh://git@{{ TROVE_HOSTNAME }}/",
 }
 
 local notify_mason = false

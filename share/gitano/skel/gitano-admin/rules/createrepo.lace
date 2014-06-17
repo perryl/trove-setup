@@ -11,7 +11,7 @@
 # Administrators have already been permitted whatever they like
 # so this is for site-wide non-admins.
 
-##PEOPLE_COMMENT##allow "Personal repo creation is okay" repo_is_personal
+{{ PEOPLE_COMMENT }}allow "Personal repo creation is okay" repo_is_personal
 
 # Allow people in *-admins to create repositories under <foo>
 allow "Project admins may make project repositories" repo_is_local_project project_admin

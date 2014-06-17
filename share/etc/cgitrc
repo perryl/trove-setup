@@ -1,4 +1,4 @@
-clone-prefix=git://##TROVE_HOSTNAME## http://##TROVE_HOSTNAME##/git https://##TROVE_HOSTNAME##/git ssh://git@##TROVE_HOSTNAME##
+clone-prefix=git://{{ TROVE_HOSTNAME }} http://{{ TROVE_HOSTNAME }}/git https://{{ TROVE_HOSTNAME }}/git ssh://git@{{ TROVE_HOSTNAME }}
 strict-export=git-daemon-export-ok
 
 css=/cgit/cgit.css
@@ -8,8 +8,8 @@ head-include=/etc/cgit-trove-head.inc
 footer=/etc/cgit-trove-footer.inc
 
 enable-index-links=1
-root-title=##TROVE_TITLE## Git Repositories
-root-desc=Baserock Trove -- For ##TROVE_COMPANY##
+root-title={{ TROVE_ID }} Git Repositories
+root-desc=Baserock Trove -- For {{ TROVE_COMPANY }}
 snapshots=tar.gz
 enable-commit-graph=1
 enable-log-filecount=1

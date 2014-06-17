@@ -83,9 +83,9 @@ define is_admin_ref ref refs/gitano/admin
 #
 #
 
-define repo_is_personal repository ~^##ESC_PERSONAL_PREFIX##/${user}/
-define ref_is_personal ref ~^refs/heads/##ESC_PREFIX##/${user}/
-define repo_is_local_project repository ~^##ESC_PREFIX##/[^/]+/
+define repo_is_personal repository ~^{{ ESC_PERSONAL_PREFIX }}/${user}/
+define ref_is_personal ref ~^refs/heads/{{ ESC_PREFIX }}/${user}/
+define repo_is_local_project repository ~^{{ ESC_PREFIX }}/[^/]+/
 
 define project_reader  group ${repository/2}-readers
 define project_writer  group ${repository/2}-writers
@@ -100,7 +100,7 @@ define trove_site_admin group trove-admin
 define target_group_gitano_admin targetgroup gitano-admin
 
 define is_lorry user lorry
-define is_local_ref ref ~^refs/heads/##ESC_PREFIX##/
+define is_local_ref ref ~^refs/heads/{{ ESC_PREFIX }}/
 define lorryable_repo allof !repo_is_local_project !repo_is_personal !is_admin_repo
 
 define is_worker group workers
