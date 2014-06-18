@@ -1,0 +1,19 @@
+# Depends on:
+# - users.yml
+---
+- name: Create artifacts and ccache folder for the cache user
+  file: path=/home/cache/{{ item }} state=directory owner=cache group=cache
+  with_items:
+  - artifacts
+  - ccache
+- name: Create /etc/exports.d folder
+  file: path=/etc/exports.d state=directory
+- name: Create /etc/exports.d/cache.exports
+  shell: |
+         echo '/home/cache/ccache *(rw,all_squash,no_subtree_check,anonuid=1002,anongid=1002)' > /etc/exports.d/cache.exports
+         creates=/etc/exports.d/cache.exports
+  register: cache_exports
+
+- name: Update nfs exports
+  shell: exportfs -av
+  when: cache_exports|changed

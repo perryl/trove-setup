@@ -1,0 +1,18 @@
+---
+- include: check.yml
+- include: hostname.yml
+- include: known-hosts-setup.yml
+- include: users.yml
+- include: cache-setup.yml
+- include: lighttpd.yml
+- include: lorry-setup.yml
+- include: git.yml
+- include: gitano-setup.yml
+- include: lorry-controller-setup.yml
+- include: minions.yml
+- include: site-groups.yml
+- include: releases.yml
+- include: gitano-worker-setup.yml
+- include: gitano-lorry-setup.yml
+- include: gitano-admin-setup.yml
+- include: backups.yml

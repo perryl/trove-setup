@@ -1,0 +1,45 @@
+# Depends on:
+# - git.yml
+---
+# Before configuring Gitano, it's necessary to modify the placeholders
+# of the skeleton template of Gitano with the values of /etc/trove/trove.conf.
+# Ansible does not provide an efficient way to do this. Its template module
+# is not able to run recursively over directories, and is not able to create
+# the directories needed.
+#
+# The solution implemented consists in create the directories first and then
+# using the template module in all the files. This could be possible to
+# implement using the 'with_lines' option combinated with the 'find' command.
+#
+# Create the directories
+- name: Create the directories needed for the Gitano skeleton.
+  file: path=/etc/{{ item }} state=directory
+  with_lines:
+  - (cd /usr/share/trove-setup &&  find gitano -type d)
+# Copy all the files to the right place and fill the templates whenever possible
+- name: Create the Gitano skeleton using the templates
+  template: src=/usr/share/trove-setup/{{ item }} dest=/etc/{{ item }}
+  with_lines:
+  - (cd /usr/share/trove-setup && find gitano -type f)
+
+# Configure gitano
+- name: Configure Gitano with /etc/gitano-setup.clod
+  shell: |
+         su git -c 'gitano-setup /etc/gitano-setup.clod'
+         creates=/home/git/repos/gitano-admin.git
+
+- name: Unlock the password of the git user (This task can fail)
+  shell: busybox passwd -u git
+  register: passwd_result
+  changed_when: passwd_result|success
+  ignore_errors: True
+
+# Now that /home/git/repos exists, we can enable the git-daemon service
+- name: Enable the git-daemon.service
+  service: name=git-daemon.service enabled=yes
+  register: git_daemon_service
+
+# Now we can start the service without rebooting the system
+- name: Restart git-daemon.service
+  service: name=git-daemon state=restarted
+  when: git_daemon_service|changed 

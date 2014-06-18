@@ -1,0 +1,39 @@
+# Depends on:
+# - gitano-setup.yml
+---
+- name: Check if the admin user is configured in gitano (This task can fail)
+  shell: su git -c 'ssh git@localhost user' | grep '^'{{ TROVE_ADMIN_USER|regex_replace('(\\W)', '\\\\\\1')|quote}}':'
+  register: gitano_admin_user
+  changed_when: False
+  ignore_errors: True
+# If the admin user doesn't exist
+- name: Create the admin user
+  shell: su git -c 'ssh git@localhost user add '{{ TROVE_ADMIN_USER|quote|quote|quote}}' '{{ TROVE_ADMIN_EMAIL|quote|quote|quote }}' '{{ TROVE_ADMIN_NAME|quote|quote|quote }}
+  when: gitano_admin_user|failed
+
+- name: Check if admin user is in trove-admin group in gitano (This task can fail)
+  shell: su git -c 'ssh git@localhost as '{{ TROVE_ADMIN_USER|quote|quote|quote }}' whoami' | grep 'trove-admin. Trove-local administration'
+  register: gitano_admin_group
+  changed_when: False
+  ignore_errors: True
+# If the admin user is not in the trove-admin group
+- name: Add the admin user to the trove-admin group in gitano
+  shell: su git -c 'ssh git@localhost group adduser trove-admin '{{ TROVE_ADMIN_USER|quote|quote|quote }}
+  when: gitano_admin_group|failed
+
+- name: Check if admin user has a sshkey configured in gitano (This task can fail)
+  shell: su git -c 'ssh git@localhost as '{{ TROVE_ADMIN_USER|quote|quote|quote }}' sshkey' 2>&1 | grep WARNING
+  register: gitano_admin_key
+  changed_when: False
+  ignore_errors: True
+# If admin user doesn't have an sshkey configured
+- name: Create /home/git/keys/ to store sshkeys
+  file: path=/home/git/keys state=directory owner=git group=git
+  when: gitano_admin_key|success
+- name: Copy the TROVE_ADMIN_SSH_PUBKEY to /home/git/keys/admin.key.pub
+  copy: src={{ TROVE_ADMIN_SSH_PUBKEY }} dest=/home/git/keys/admin.key.pub mode=0644
+  when: gitano_admin_key|success
+
+- name: Add /home/git/keys/admin.key.pub ssh key to the admin user in gitano.
+  shell: su git -c 'ssh git@localhost as '{{ TROVE_ADMIN_USER|quote|quote|quote}}' sshkey add default < /home/git/keys/admin.key.pub'
+  when: gitano_admin_key|success

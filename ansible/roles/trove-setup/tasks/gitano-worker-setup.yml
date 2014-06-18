@@ -1,0 +1,18 @@
+# Depends on:
+# - gitano-setup.yml
+---
+- name: Check if worker has a sshkey configured in gitano (This task can fail)
+  shell: su git -c 'ssh git@localhost as distbuild sshkey' 2>&1 | grep WARNING
+  register: gitano_worker_key
+  changed_when: False
+  ignore_errors: True
+# If distbuild user doesn't have an sshkey configured
+- name: Create /home/git/keys/ to store ssh keys
+  file: path=/home/git/keys state=directory owner=git group=git
+  when: gitano_worker_key|success
+- name: Copy WORKER_SSH_PUBKEY to /home/git/keys/worker.key.pub
+  copy: src={{ WORKER_SSH_PUBKEY }} dest=/home/git/keys/worker.key.pub mode=0644
+  when: gitano_worker_key|success
+- name: Add /home/git/keys/worker.key.pub to the distbuild user in Gitano
+  shell: su git -c 'ssh git@localhost as distbuild sshkey add trove < /home/git/keys/worker.key.pub'
+  when: gitano_worker_key|success

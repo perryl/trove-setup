@@ -1,0 +1,18 @@
+# Depends on:
+# - gitano-setup.yml
+---
+- name: Check if lorry has a sshkey configured in gitano (This task can fail)
+  shell: su git -c 'ssh git@localhost as lorry sshkey' 2>&1 | grep WARNING
+  register: gitano_lorry_key
+  changed_when: False
+  ignore_errors: True
+# If lorry user doesn't have an sshkey configured
+- name: Create /home/git/keys folder to store ssh keys
+  file: path=/home/git/keys state=directory owner=git group=git
+  when: gitano_lorry_key|success
+- name: Copy LORRY_SSH_PUBKEY to /home/git/keys/lorry.key.pub
+  copy: src={{ LORRY_SSH_PUBKEY }} dest=/home/git/keys/lorry.key.pub mode=0644
+  when: gitano_lorry_key|success
+- name: Add to the gitano lorry user the /home/git/keys/lorry.key.pub
+  shell: su git -c 'ssh git@localhost as lorry sshkey add trove < /home/git/keys/lorry.key.pub'
+  when: gitano_lorry_key|success
