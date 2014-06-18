@@ -1,4 +1,6 @@
 install:
+	mkdir -p "${DESTDIR}/usr/lib/trove-setup/ansible"
+	cp -r ansible/* "${DESTDIR}/usr/lib/trove-setup/ansible"
 	mkdir -p "${DESTDIR}/usr/lib/systemd/system/multi-user.target.wants"
 	cp units/* "${DESTDIR}/usr/lib/systemd/system"
 	ln -sf ../trove-setup.service "${DESTDIR}/usr/lib/systemd/system/multi-user.target.wants/trove-setup.service"

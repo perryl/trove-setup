@@ -1,0 +1,16 @@
+[Unit]
+Description=Run trove-setup Ansible scripts
+Requires=network.target
+After=network.target
+Requires=opensshd.service
+After=opensshd.service
+
+# If there's a shared /var subvolume, it must be mounted before this
+# unit runs.
+Requires=local-fs.target
+After=local-fs.target
+
+ConditionPathExists=/etc/trove/trove.conf
+
+[Service]
+ExecStart=/usr/bin/ansible-playbook -v -i /usr/lib/trove-setup/ansible/hosts /usr/lib/trove-setup/ansible/trove-setup.yml
