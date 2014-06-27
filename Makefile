@@ -1,9 +1,7 @@
 install:
 	mkdir -p "${DESTDIR}/usr/lib/systemd/system/multi-user.target.wants"
 	cp units/* "${DESTDIR}/usr/lib/systemd/system"
-	for I in $$(cd units; ls); do \
-		ln -sf ../$$I "${DESTDIR}/usr/lib/systemd/system/multi-user.target.wants/$$I"; \
-	done
+	ln -sf ../trove-setup.service "${DESTDIR}/usr/lib/systemd/system/multi-user.target.wants/trove-setup.service"
 	cp -r etc "${DESTDIR}"
 	mkdir -p "${DESTDIR}/var/www/htdocs"
 	cp http-assets/* "${DESTDIR}/var/www/htdocs"
