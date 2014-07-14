@@ -1,0 +1,88 @@
+# Depends on:
+# - gitano-setup.yml
+---
+# First of all check if the site groups are created.
+- name: Check for site groups (This task can fail)
+  shell: su git -c 'ssh git@localhost group list' | grep '^'{{ item.name|quote }}':'
+  changed_when: False
+  ignore_errors: True
+  with_items:
+  - { name: 'site-readers', description: 'Users with read access to the site project' }
+  - { name: 'site-writers', description: 'Users with write access to the site project' }
+  - { name: 'site-admins', description: 'Users with admin access to the site project' }
+  - { name: 'site-managers', description: 'Users with manager access to the site project' }
+  register: gitano_groups
+# Iterate over the results of the previous check, and create the sites needed.
+# In this task we are using the list of results of the previous task
+# - item is the result of the execution of one of the elements of
+#  the list of the previous task.
+# - item.item is the item of the previous task being executed when
+#   the result (stored in item) was taken.
+#
+# For example, the task: (From http://docs.ansible.com/playbooks_loops.html#using-register-with-a-loop)
+#
+# - shell: echo "{{ item }}"
+#   with_items:
+#   - one
+#   - two
+#   register: echo 
+#
+# Would register in the variable "echo":
+#
+# {
+#    "changed": true,
+#    "msg": "All items completed",
+#    "results": [
+#        {
+#            "changed": true,
+#            "cmd": "echo \"one\" ",
+#            "delta": "0:00:00.003110",
+#            "end": "2013-12-19 12:00:05.187153",
+#            "invocation": {
+#                "module_args": "echo \"one\"",
+#                "module_name": "shell"
+#            },
+#            "item": "one",
+#            "rc": 0,
+#            "start": "2013-12-19 12:00:05.184043",
+#            "stderr": "",
+#            "stdout": "one"
+#        },
+#        {
+#            "changed": true,
+#            "cmd": "echo \"two\" ",
+#            "delta": "0:00:00.002920",
+#            "end": "2013-12-19 12:00:05.245502",
+#            "invocation": {
+#                "module_args": "echo \"two\"",
+#                "module_name": "shell"
+#            },
+#            "item": "two",
+#            "rc": 0,
+#            "start": "2013-12-19 12:00:05.242582",
+#            "stderr": "",
+#            "stdout": "two"
+#        }
+#    ]
+# }
+
+- name: Create the site groups needed.
+  shell: su git -c 'ssh git@localhost group add '{{ item.item.name|quote|quote|quote }}' '{{ item.item.description|quote|quote|quote }}
+  when: item|failed
+  with_items: gitano_groups.results
+
+# When the groups are created, check if they are linked.
+- name: Check for linked groups (This task can fail)
+  shell: su git -c 'ssh git@localhost group show '{{ item.name|quote|quote|quote }} | grep '^ \[] '{{ item.super_group|quote }}
+  changed_when: False
+  ignore_errors: True
+  with_items:
+  - { name: 'site-readers', super_group: 'site-writers' }
+  - { name: 'site-writers', super_group: 'site-admins' }
+  - { name: 'site-admins', super_group: 'site-managers' }
+  register: gitano_linked_groups
+
+# Link the groups that weren't linked following the same strategy as for the groups
+- shell: su git -c 'ssh git@localhost group addgroup '{{ item.item.name|quote|quote|quote }}' '{{ item.item.super_group|quote|quote|quote }}
+  when: item|failed
+  with_items: gitano_linked_groups.results

@@ -1,0 +1,16 @@
+# Depends on:
+# - check.yml
+---
+- name: Create the backups user if TROVE_BACKUP_KEYS is defined
+  user: name=backup comment="Backup user" shell=/bin/sh home=/root/backup-user-home group=root uid=0 non_unique=yes
+  when: TROVE_BACKUP_KEYS is defined
+
+- name: Creates the .ssh directory to the backups user if TROVE_BACKUP_KEYS is defined
+  file: path=/root/backup-user-home/.ssh state=directory
+  when: TROVE_BACKUP_KEYS is defined
+
+- name: Copy the TROVE_BACKUP_KEYS if defined to authorized_keys of the backup user
+  shell: |
+         cat {{ TROVE_BACKUP_KEYS }} >> /root/backup-user-home/.ssh/authorized_keys
+         creates=/root/backup-user-home/.ssh/authorized_keys
+  when: TROVE_BACKUP_KEYS is defined

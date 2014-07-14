@@ -1,0 +1,38 @@
+# Depends on:
+# - check.yml
+---
+- name: Create the lorry user without generating sshkeys.
+  user: name=lorry comment="Trove lorry service" shell=/bin/bash
+- name: Create the /home/lorry/.ssh folder
+  file: path=/home/lorry/.ssh state=directory owner=lorry group=lorry mode=0700
+
+- name: Create users (git, cache, mason) and ssh keys for them.
+  user: name={{ item }} comment="Trove {{ item }} service" shell=/bin/bash generate_ssh_key=yes
+  with_items:
+  - git
+  - cache
+  - mason
+- name: Create known_hosts for all the users
+  shell: |
+         cat /etc/ssh/ssh_host_*_key.pub | cut -d\  -f1,2 | \
+         sed -e's/^/'{{ TROVE_HOSTNAME|regex_replace('(\\W)', '\\\\\\1')|quote }}',localhost /' > \
+         /home/{{ item }}/.ssh/known_hosts
+         chown {{ item }}:{{ item }} /home/{{ item }}/.ssh/known_hosts
+         chmod 600 /home/{{ item }}/.ssh/known_hosts
+         creates=/home/{{ item }}/.ssh/known_hosts
+  with_items:
+  - git
+  - cache
+  - mason
+  - lorry
+
+- name: Copy the lorry ssh private key
+  copy: |
+        src={{ LORRY_SSH_KEY }}
+        dest=/home/lorry/.ssh/id_rsa
+        owner=lorry group=lorry mode=600
+- name: Copy the lorry ssh public key
+  copy: |
+        src={{ LORRY_SSH_PUBKEY }}
+        dest=/home/lorry/.ssh/id_rsa.pub
+        owner=lorry group=lorry mode=644

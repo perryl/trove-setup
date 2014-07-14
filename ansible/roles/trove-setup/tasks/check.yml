@@ -1,0 +1,73 @@
+---
+- fail: msg='TROVE_ID is mandatory'
+  when: TROVE_ID is not defined
+
+- fail: msg='TROVE_COMPANY is mandatory'
+  when: TROVE_COMPANY is not defined
+
+- fail: msg='TROVE_ADMIN_USER is mandatory'
+  when: TROVE_ADMIN_USER is not defined
+
+- fail: msg='TROVE_ADMIN_EMAIL is mandatory'
+  when: TROVE_ADMIN_EMAIL is not defined
+
+- fail: msg='TROVE_ADMIN_NAME is mandatory'
+  when: TROVE_ADMIN_NAME is not defined
+
+- fail: msg='LORRY_SSH_KEY is mandatory'
+  when: LORRY_SSH_KEY is not defined
+
+- fail: msg='LORRY_SSH_PUBKEY is mandatory'
+  when: LORRY_SSH_PUBKEY is not defined
+
+- fail: msg='TROVE_ADMIN_SSH_PUBKEY is mandatory'
+  when: TROVE_ADMIN_SSH_PUBKEY is not defined
+
+- fail: msg='WORKER_SSH_PUBKEY is mandatory'
+  when: WORKER_SSH_PUBKEY is not defined
+
+- fail: msg='UPSTREAM_TROVE is mandatory'
+  when: UPSTREAM_TROVE is not defined
+
+- set_fact: TROVE_HOSTNAME={{ TROVE_ID }}
+  when: TROVE_HOSTNAME is not defined
+
+- set_fact: LORRY_CONTROLLER_MINIONS=4
+  when: LORRY_CONTROLLER_MINIONS is not defined
+
+- set_fact: MASON_ID=''
+  when: MASON_ID is not defined
+ 
+- set_fact: MASON_PORT='18755'
+  when: MASON_PORT is not defined
+
+- name: Calculate ESC_PREFIX
+  shell: echo -n {{ TROVE_ID|quote }} | perl -pe 's/([-+\(\).%*?^$\[\]])/%$1/g'
+  register: var_esc_prefix
+  changed_when: False
+
+- set_fact: ESC_PREFIX={{ var_esc_prefix.stdout }}
+
+- set_fact: ESC_PERSONAL_PREFIX='people'
+
+- set_fact: PEOPLE_COMMENT='#'
+
+- name: Check if the ssh keys are valid
+  shell: ssh-keygen -l -f {{ item }}
+  with_items:
+  - '{{ TROVE_ADMIN_SSH_PUBKEY }}'
+  - '{{ LORRY_SSH_PUBKEY }}'
+  - '{{ WORKER_SSH_PUBKEY }}'
+  changed_when: False
+
+- name: Check if the ssh keys are unique
+  shell: |
+         cat {{ TROVE_ADMIN_SSH_PUBKEY|quote}} \
+             {{ LORRY_SSH_PUBKEY|quote }} \
+             {{ WORKER_SSH_PUBKEY|quote }} \
+             | cut -d ' ' -f 1,2 | sort -u | wc -l
+  changed_when: False
+  register: number_ssh_keys
+
+- fail: msg="The ssh keys MUST be different"
+  when: number_ssh_keys.stdout != '3'

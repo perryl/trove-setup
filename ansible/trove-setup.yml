@@ -1,0 +1,6 @@
+---
+- hosts: localhost
+  vars_files:
+  - "/etc/trove/trove.conf"
+  roles:
+  - trove-setup

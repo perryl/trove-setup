@@ -1,0 +1,7 @@
+# Depends on:
+# - check.yml
+---
+- name: Add localhost and UPSTREAM_TROVE to /etc/ssh/ssh_known_hosts
+  shell: |
+         ssh-keyscan localhost {{ UPSTREAM_TROVE|quote }} > /etc/ssh/ssh_known_hosts
+         creates=/etc/ssh/ssh_known_hosts

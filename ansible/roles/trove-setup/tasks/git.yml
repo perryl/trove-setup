@@ -1,0 +1,8 @@
+# Depends on:
+# - users.yml
+---
+- name: Configure Git user.name and usr.email
+  shell: |
+         su git -c 'git config --global user.name "Trove Git Controller"'
+         su git -c 'git config --global user.email "git@trove"'
+         creates=/home/git/.gitconfig

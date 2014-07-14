@@ -1,0 +1,42 @@
+---
+- name: Create /etc/lighttpd/certs directory
+  file: path=/etc/lighttpd/certs state=directory
+- name: Create certificates for lighttpd in /etc/lighttpd/certs/lighttpd.pem
+  shell: |
+         yes '' | openssl req -new -x509 \
+              -keyout /etc/lighttpd/certs/lighttpd.pem \
+              -out /etc/lighttpd/certs/lighttpd.pem -days 36525 -nodes
+         creates=/etc/lighttpd/certs/lighttpd.pem
+  register: lighttpd_certs
+- name: Create /var/run/lighttpd for cache user
+  file: path=/var/run/lighttpd state=directory owner=cache group=cache
+  register: lighttpd_folder
+
+# Now that the lighttpd certificates and the /var/run/lighttpd exist, we can
+# enable the lighttpd-git service
+- name: Enable lighttpd-git service
+  service: name=lighttpd-git.service enabled=yes
+  register: lighttpd_git_service
+
+# Now we can start the service without rebooting the system
+- name: Restart the lighttpd-git service
+  service: name=lighttpd-git state=restarted
+  when: lighttpd_git_service|changed
+
+# Once the service lighttpd-git is running it's possible to do the same
+# with the following services:
+# - lighttpd-morph-cache
+# - lighttpd-lorry-controller-webapp
+- name: Enable lighttpd-morph-cache service
+  service: name=lighttpd-morph-cache.service enabled=yes
+  register: lighttpd_morph_cache_service
+- name: Restart the lighttpd-morph-cache service
+  service: name=lighttpd-morph-cache state=restarted
+  when: lighttpd_morph_cache_service|changed
+
+- name: Enable the lighttpd-lorry-controller-webapp service
+  service: name=lighttpd-lorry-controller-webapp.service enabled=yes
+  register: lighttpd_lorry_controller_webapp_service
+- name: Restart the lighttpd-lorry-controller-webapp service
+  service: name=lighttpd-lorry-controller-webapp state=restarted
+  when: lighttpd_lorry_controller_webapp_service|changed

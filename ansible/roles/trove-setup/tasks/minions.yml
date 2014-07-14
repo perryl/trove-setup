@@ -1,0 +1,20 @@
+# Depends on:
+# - lorry-controller-setup.yml
+---
+# This is a workaround because the service module and the current
+# systemd version doesn't work well enough with template units.
+#
+# It ALWAYS runs `systemctl enable` for all the minions to be
+# created, but it only reports that the status of the task has changed
+# when in the stderr output is the string "ln -s" (which means the
+# unit has been enabled).
+- name: Enable as many MINIONS as specified in LORRY_CONTROLLER_MINIONS
+  shell: systemctl enable lorry-controller-minion@{{ item }}.service
+  with_sequence: count={{ LORRY_CONTROLLER_MINIONS }}
+  changed_when: "'ln -s' in minions_creation.stderr"
+  register: minions_creation
+
+- name: Start the all the MINIONS created (if any)
+  service: name=lorry-controller-minion@{{ item.item }} state=restarted
+  with_items: minions_creation.results
+  when: item|changed

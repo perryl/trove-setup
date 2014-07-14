@@ -1,0 +1,26 @@
+# Depends on:
+# - check.yml
+---
+- name: Check the /etc/hostname and compare it with HOSTNAME (This task can fail)
+  shell: su -c '[ "$(cat /etc/hostname)" == '{{ HOSTNAME|quote|quote }}' ]'
+  register: hostname_file
+  ignore_errors: True
+  changed_when: False
+  when: HOSTNAME is defined
+
+# If /etc/hostname doesn't match with HOSTNAME
+- name: Rewrite /etc/hostname with HOSTNAME
+  shell: echo {{ HOSTNAME|quote }} > /etc/hostname
+  when: hostname_file|failed
+
+- name: Check the actual hostname with `hostname` and compare it with HOSTNAME (This task can fail)
+  shell: sh -c '[ "$(hostname)" == '{{ HOSTNAME|quote|quote }}' ]'
+  register: actual_hostname
+  ignore_errors: True
+  changed_when: False
+  when: HOSTNAME is defined
+
+# If `hostname` doesn't match with HOSTNAME
+- name: Change the hostname to HOSTNAME
+  shell: hostname {{ HOSTNAME|quote }}
+  when: actual_hostname|failed

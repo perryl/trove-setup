@@ -1,0 +1,92 @@
+# Depends on:
+# - gitano-setup.yml
+# - lighttpd.yml
+---
+- name: Create the TROVE_ID/local-config/lorries repository
+  shell: |
+         su git -c 'ssh localhost create '{{ TROVE_ID|quote|quote|quote }}'/local-config/lorries'
+         creates=/home/git/repos/{{ TROVE_ID|regex_replace('(\\W)', '\\\\\\1')}}/local-config/lorries.git
+- name: Create a temporary folder to copy templates
+  shell: su git -c 'mktemp -d'
+  register: lorry_controller_templates
+
+- name: Create the configuration files of lorry-controller using templates
+  template: src=/usr/share/trove-setup/{{ item }} dest={{ lorry_controller_templates.stdout }}/{{ item }} owner=git group=git mode=0644
+  with_items:
+  - lorry-controller.conf
+  - README.lorry-controller
+- name: Create a temporary folder to copy the lorry-controller repository
+  shell: su git -c 'mktemp -d'
+  register: lorry_controller_repository
+
+- name: Configure the lorry-controller
+  shell: |
+         su git -c 'git clone ssh://localhost/'{{ TROVE_ID|quote|quote }}'/local-config/lorries.git '{{ lorry_controller_repository.stdout|quote|quote }}'/lorries'
+         su git -c 'cp '{{ lorry_controller_templates.stdout|quote|quote }}'/lorry-controller.conf '{{ lorry_controller_repository.stdout|quote|quote }}'/lorries/lorry-controller.conf'
+         su git -c 'cp '{{ lorry_controller_templates.stdout|quote|quote }}'/README.lorry-controller '{{ lorry_controller_repository.stdout|quote|quote }}'/lorries/README'
+         su git -c 'mkdir '{{ lorry_controller_repository.stdout|quote|quote }}'/lorries/open-source-lorries'
+         su git -c 'cp /usr/share/trove-setup/open-source-lorries/README '{{ lorry_controller_repository.stdout|quote|quote }}'/lorries/open-source-lorries/README'
+         su git -c 'mkdir '{{ lorry_controller_repository.stdout|quote|quote }}'/lorries/closed-source-lorries'
+         su git -c 'cp /usr/share/trove-setup/closed-source-lorries/README '{{ lorry_controller_repository.stdout|quote|quote }}'/lorries/closed-source-lorries/README'
+         su git -c 'cd '{{ lorry_controller_repository.stdout|quote|quote }}'/lorries; git add README lorry-controller.conf open-source-lorries/README closed-source-lorries/README; git commit -m "Initial configuration"; git push origin master'
+         su git -c 'rm -rf '{{ lorry_controller_repository.stdout|quote|quote }}
+         creates=/home/git/repos/{{ TROVE_ID|regex_replace('(\\W)', '\\\\\\1')}}/local-config/lorries.git/refs/heads/master
+
+# Migration: Remove the old lorry-controller cronjob if exists
+- name: Look for lorry-controller old cronjob (This task can fail)
+  shell: su lorry -c 'crontab -l | grep -e "-c lorry-controller"'
+  register: lorry_controller_cronjob
+  changed_when: False
+  ignore_errors: True
+
+- name: Remove the old lorry-controller cronjob
+  shell: su lorry -c '/usr/libexec/remove-lorry-controller-from-lorry-crontab'
+  when: lorry_controller_cronjob|success
+
+
+# Now that the lorry-controller is configured we can enable the following
+# services and timers, and also start them
+# - lorry-controller-status
+# - lorry-controller-readconf
+# - lorry-controller-ls-troves
+- name: Enable lorry-controller-status service
+  service: name=lorry-controller-status.service enabled=yes
+  register: lorry_controller_status_service
+- name: Start lorry-controller-status service
+  service: name=lorry-controller-status.service state=restarted
+  when: lorry_controller_status_service|changed
+
+- name: Enable lorry-controller-readconf service
+  service: name=lorry-controller-readconf.service enabled=yes
+  register: lorry_controller_readconf_service
+- name: Start lorry-controller-readconf service
+  service: name=lorry-controller-readconf.service state=restarted
+  when: lorry_controller_readconf_service|changed
+
+- name: Enable lorry-controller-ls-troves service
+  service: name=lorry-controller-ls-troves.service enabled=yes
+  register: lorry_controller_ls_troves_service
+- name: Start lorry-controller-ls-troves service
+  service: name=lorry-controller-ls-troves.service state=restarted
+  when: lorry_controller_ls_troves_service|changed
+
+- name: Enable lorry-controller-status timer
+  service: name=lorry-controller-status.timer enabled=yes
+  register: lorry_controller_status_timer
+- name: Start lorry-controller-status timer
+  service: name=lorry-controller-status.timer state=restarted
+  when: lorry_controller_status_timer|changed
+
+- name: Enable lorry-controller-readconf timer
+  service: name=lorry-controller-readconf.timer enabled=yes
+  register: lorry_controller_readconf_timer
+- name: Start lorry-controller-readconf timer
+  service: name=lorry-controller-readconf.timer state=restarted
+  when: lorry_controller_readconf_timer|changed
+
+- name: Enable lorry-controller-ls-troves timer
+  service: name=lorry-controller-ls-troves.timer enabled=yes
+  register: lorry_controller_ls_troves_timer
+- name: Start lorry-controller-ls-troves timer
+  service: name=lorry-controller-ls-troves.timer state=restarted
+  when: lorry_controller_ls_troves_timer|changed

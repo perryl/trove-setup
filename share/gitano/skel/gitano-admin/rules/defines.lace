@@ -1,0 +1,106 @@
+#  _____                   
+# |_   _| __ _____   _____ 
+#   | || '__/ _ \ \ / / _ \
+#   | || | | (_) \ V /  __/
+#   |_||_|  \___/ \_/ \___|
+#
+# Copyright 2012,2013 Codethink Limited
+#
+# Core definitions for access control
+
+# Gitano provided definitions first
+
+# User/group related
+define is_admin group gitano-admin
+define is_owner owner ${user}
+define is_anonymous user gitano/anonymous
+
+define if_asanother as_user ~.
+
+# Self-related operations
+define op_whoami operation whoami
+define op_sshkey operation sshkey
+define op_passwd operation passwd
+define op_self anyof op_whoami op_sshkey op_passwd
+
+# Admin-related operations
+
+## Users
+define op_useradd operation useradd
+define op_userdel operation userdel
+define op_userlist operation userlist
+define op_useremail operation useremail
+define op_username operation username
+define op_user anyof op_userlist op_useradd op_userdel op_useremail op_username
+
+## Groups
+define op_grouplist operation grouplist
+define op_groupshow operation groupshow
+define op_groupadd operation groupadd
+define op_groupdel operation groupdel
+define op_groupadduser operation groupadduser
+define op_groupdeluser operation groupdeluser
+define op_groupaddgroup operation groupaddgroup
+define op_groupdelgroup operation groupdelgroup
+define op_groupdescription operation groupdescription
+define op_group anyof op_grouplist op_groupshow op_groupadd op_groupdel op_groupadduser op_groupdeluser op_groupaddgroup op_groupdelgroup op_groupdescription
+
+## Aggregation of admin ops
+define op_is_admin anyof op_user op_group
+
+# Primary repository-related operations
+define op_read operation read
+define op_write operation write
+define op_createrepo operation createrepo
+define op_renamerepo operation renamerepo
+define op_destroyrepo operation destroyrepo
+
+# Remote configuration operations
+define op_config_show operation config_show
+define op_config_set operation config_set
+define op_config_del operation config_del
+define op_is_config anyof op_config_show op_config_set op_config_del
+
+# Reference update related operations
+define op_createref operation createref
+define op_deleteref operation deleteref
+define op_fastforward operation updaterefff
+define op_forcedupdate operation updaterefnonff
+
+# Combinator operations
+define op_is_basic anyof op_read op_write
+define op_is_update anyof op_fastforward op_forcedupdate
+define op_is_normal anyof op_fastforward op_createref op_deleteref
+
+# Administration
+define is_admin_repo repository gitano-admin
+define is_gitano_ref ref ~^refs/gitano/
+define is_admin_ref ref refs/gitano/admin
+
+#
+#
+# Trove definitions after here
+#
+#
+
+define repo_is_personal repository ~^{{ ESC_PERSONAL_PREFIX }}/${user}/
+define ref_is_personal ref ~^refs/heads/{{ ESC_PREFIX }}/${user}/
+define repo_is_local_project repository ~^{{ ESC_PREFIX }}/[^/]+/
+
+define project_reader  group ${repository/2}-readers
+define project_writer  group ${repository/2}-writers
+define project_admin   group ${repository/2}-admins
+define project_manager group ${repository/2}-managers
+
+define master_ref ref ~^refs/heads/master$
+
+define op_is_reffy anyof op_is_normal op_forcedupdate
+
+define trove_site_admin group trove-admin
+define target_group_gitano_admin targetgroup gitano-admin
+
+define is_lorry user lorry
+define is_local_ref ref ~^refs/heads/{{ ESC_PREFIX }}/
+define lorryable_repo allof !repo_is_local_project !repo_is_personal !is_admin_repo
+
+define is_worker group workers

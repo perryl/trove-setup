@@ -1,0 +1,20 @@
+# Depends on:
+# - users.yml
+---
+- name: Create bundles and tarballs folder for the lorry user
+  file: path=/home/lorry/{{ item }} state=directory owner=lorry group=lorry
+  with_items:
+  - bundles
+  - tarballs
+# Following the same strategy as explained in gitano-setup.yml, use
+# templates recursively over directories.
+# Create the directories needed to copy the files
+- name: Create directories needed in /etc for the lorry configuration
+  file: path=/etc/{{ item }} state=directory
+  with_lines:
+  - (cd /usr/share/trove-setup/etc &&  find -type d)
+# Copy all the files to the right place and fill the templates whenever possible
+- name: Add the configuration needed for lorry in /etc using templates
+  template: src=/usr/share/trove-setup/etc/{{ item }} dest=/etc/{{ item }}
+  with_lines:
+  - (cd /usr/share/trove-setup/etc && find -type f)
