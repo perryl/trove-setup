@@ -29,6 +29,9 @@
 - fail: msg='UPSTREAM_TROVE is mandatory'
   when: UPSTREAM_TROVE is not defined
 
+- set_fact: UPSTREAM_TROVE_PROTOCOL=ssh
+  when: UPSTREAM_TROVE_PROTOCOL is not defined
+
 - set_fact: TROVE_HOSTNAME={{ TROVE_ID }}
   when: TROVE_HOSTNAME is not defined
 
