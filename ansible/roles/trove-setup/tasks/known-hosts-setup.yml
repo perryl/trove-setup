@@ -1,7 +1,10 @@
 # Depends on:
 # - check.yml
 ---
+# If UPSTREAM_TROVE is not defined, the jinja2 'default' filter will
+# replace it with an empty string. ssh-keyscan skips empty hostnames,
+# so it will run only with 'localhost'
 - name: Add localhost and UPSTREAM_TROVE to /etc/ssh/ssh_known_hosts
   shell: |
-         ssh-keyscan localhost {{ UPSTREAM_TROVE|quote }} > /etc/ssh/ssh_known_hosts
+         ssh-keyscan localhost {{ UPSTREAM_TROVE|default('')|quote }} > /etc/ssh/ssh_known_hosts
          creates=/etc/ssh/ssh_known_hosts
