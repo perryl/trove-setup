@@ -26,7 +26,7 @@
 - fail: msg='WORKER_SSH_PUBKEY is mandatory'
   when: WORKER_SSH_PUBKEY is not defined
 
-- set_fact: UPSTREAM_TROVE_PROTOCOL=ssh
+- set_fact: UPSTREAM_TROVE_PROTOCOL=http
   when: UPSTREAM_TROVE_PROTOCOL is not defined
 
 - set_fact: TROVE_HOSTNAME={{ TROVE_ID }}
