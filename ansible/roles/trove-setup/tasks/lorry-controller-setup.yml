@@ -95,6 +95,13 @@
   service: name=lorry-controller-remove-ghost-jobs.service state=restarted
   when: lorry_controller_remove_ghost_jobs_service|changed
 
+- name: Enable lorry-controller-remove-old-jobs service
+  service: name=lorry-controller-remove-old-jobs.service enabled=yes
+  register: lorry_controller_remove_old_jobs_service
+- name: Start lorry-controller-remove-old-jobs service
+  service: name=lorry-controller-remove-old-jobs.service state=restarted
+  when: lorry_controller_remove_old_jobs_service|changed
+
 - name: Enable lorry-controller-status timer
   service: name=lorry-controller-status.timer enabled=yes
   register: lorry_controller_status_timer
@@ -122,4 +129,11 @@
 - name: Start lorry-controller-remove-ghost-jobs timer
   service: name=lorry-controller-remove-ghost-jobs.timer state=restarted
   when: lorry_controller_remove_ghost_jobs_timer|changed
+
+- name: Enable lorry-controller-remove-old-jobs timer
+  service: name=lorry-controller-remove-old-jobs.timer enabled=yes
+  register: lorry_controller_remove_old_jobs_timer
+- name: Start lorry-controller-remove-old-jobs timer
+  service: name=lorry-controller-remove-old-jobs.timer state=restarted
+  when: lorry_controller_remove_old_jobs_timer|changed
 
