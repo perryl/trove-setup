@@ -35,12 +35,6 @@
 - set_fact: LORRY_CONTROLLER_MINIONS=4
   when: LORRY_CONTROLLER_MINIONS is not defined
 
-- set_fact: MASON_ID=''
-  when: MASON_ID is not defined
- 
-- set_fact: MASON_PORT='18755'
-  when: MASON_PORT is not defined
-
 - name: Calculate ESC_PREFIX
   shell: echo -n {{ TROVE_ID|quote }} | perl -pe 's/([-+\(\).%*?^$\[\]])/%$1/g'
   register: var_esc_prefix

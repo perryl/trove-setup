@@ -6,12 +6,11 @@
 - name: Create the /home/lorry/.ssh folder
   file: path=/home/lorry/.ssh state=directory owner=lorry group=lorry mode=0700
 
-- name: Create users (git, cache, mason) and ssh keys for them.
+- name: Create users (git, cache) and ssh keys for them.
   user: name={{ item }} comment="Trove {{ item }} service" shell=/bin/bash generate_ssh_key=yes
   with_items:
   - git
   - cache
-  - mason
 - name: Create known_hosts for all the users
   shell: |
          cat /etc/ssh/ssh_host_*_key.pub | cut -d\  -f1,2 | \
@@ -23,7 +22,6 @@
   with_items:
   - git
   - cache
-  - mason
   - lorry
 
 - name: Copy the lorry ssh private key
