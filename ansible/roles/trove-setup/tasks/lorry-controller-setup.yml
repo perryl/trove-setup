@@ -24,7 +24,6 @@
                                 ignore: [
                                     "baserock/lorries"
                                 ],
-                                tarball: "always"
                            }
   when: UPSTREAM_TROVE is defined
 
