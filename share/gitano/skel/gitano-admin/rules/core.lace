@@ -35,13 +35,14 @@ include global:renamerepo op_renamerepo
 # Site-defined rules for repository destruction
 include global:destroyrepo op_destroyrepo
 
+# If you're running your access control somewhat more openly than most, You can
+# uncomment the following and force git:// access to *everything* which is not
+# the admin repository, without requiring projects to authorize it
+# per-repository.
+#allow "Anonymous access is okay" op_read !is_admin_repo
+
 # Site-defined rules for project repositories, including admin of them
 include global:project
 
 # Now the project rules themselves
 include main
-
-# If you're running your access control somewhat more openly than most, You can
-# now uncomment the following and allow git:// access to *everything* which is
-# not the admin repository
-# allow "Anonymous access is okay" op_read !is_admin_repo
