@@ -4,7 +4,8 @@
 - name: Create the releases repository
   shell: |
            su git -c 'ssh localhost create '{{ TROVE_ID|quote|quote|quote }}'/site/releases'
-           creates=/home/git/repos/{{ TROVE_ID|regex_replace('(\\W)', '\\\\\\1')}}/site/releases.git
+  args:
+    creates: /home/git/repos/{{ TROVE_ID }}/site/releases.git
 
 - name: Create temporary folder to copy templates
   shell: su git -c 'mktemp -d'
@@ -21,7 +22,8 @@
          su git -c 'cp '{{ releases_templates.stdout|quote|quote }}'/releases-repo-README '{{ releases_repository.stdout|quote|quote }}'/releases/README'
          su git -c 'cd '{{ releases_repository.stdout|quote|quote }}'/releases; git add README; git commit -m "Add README"; git push origin master'
          su -c "rm -Rf {{ releases_repository.stdout|quote|quote }}"
-         creates=/home/git/repos/{{ TROVE_ID|regex_replace('(\\W)', '\\\\\\1')}}/site/releases.git/refs/heads/master
+  args:
+    creates: /home/git/repos/{{ TROVE_ID }}/site/releases.git/refs/heads/master
 
 - name: Link the releases repository to enable the access throught browser
   file: |

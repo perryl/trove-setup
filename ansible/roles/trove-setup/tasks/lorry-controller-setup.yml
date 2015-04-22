@@ -5,7 +5,8 @@
 - name: Create the TROVE_ID/local-config/lorries repository
   shell: |
          su git -c 'ssh localhost create '{{ TROVE_ID|quote|quote|quote }}'/local-config/lorries'
-         creates=/home/git/repos/{{ TROVE_ID|regex_replace('(\\W)', '\\\\\\1')}}/local-config/lorries.git
+  args:
+     creates: /home/git/repos/{{ TROVE_ID }}/local-config/lorries.git
 - name: Create a temporary folder to copy templates
   shell: su git -c 'mktemp -d'
   register: lorry_controller_templates
@@ -47,7 +48,8 @@
          su git -c 'cp /usr/share/trove-setup/closed-source-lorries/README '{{ lorry_controller_repository.stdout|quote|quote }}'/lorries/closed-source-lorries/README'
          su git -c 'cd '{{ lorry_controller_repository.stdout|quote|quote }}'/lorries; git add README lorry-controller.conf open-source-lorries/README closed-source-lorries/README; git commit -m "Initial configuration"; git push origin master'
          su git -c 'rm -rf '{{ lorry_controller_repository.stdout|quote|quote }}
-         creates=/home/git/repos/{{ TROVE_ID|regex_replace('(\\W)', '\\\\\\1')}}/local-config/lorries.git/refs/heads/master
+  args:
+    creates: /home/git/repos/{{ TROVE_ID }}/local-config/lorries.git/refs/heads/master
 
 # Migration: Remove the old lorry-controller cronjob if exists
 - name: Look for lorry-controller old cronjob (This task can fail)
