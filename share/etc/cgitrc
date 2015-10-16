@@ -23,4 +23,8 @@ mimetype.pdf=application/pdf
 mimetype.png=image/png
 mimetype.svg=image/svg+xml
 
+repo.url=definitions
+repo.path=/home/git/repos/definitions.git
+repo.source-filter=/home/git/repos/trove-setup/etc/hyperlink_filter.py
+
 scan-path=/home/git/repos/
