@@ -23,4 +23,8 @@ mimetype.pdf=application/pdf
 mimetype.png=image/png
 mimetype.svg=image/svg+xml
 
+repo.url=definitions
+repo.path=/home/git/repos/baserock/baserock/definitions.git
+source-filter=filters/hyperlink_filter.py
+
 scan-path=/home/git/repos/
